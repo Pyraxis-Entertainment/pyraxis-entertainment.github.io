@@ -3,13 +3,57 @@
 The Pyraxis Entertainment website. Plain static HTML and CSS, served by
 GitHub Pages from this repository.
 
-**No framework, no CMS, no build step, no dependencies.** That is deliberate:
-the site should still work, unchanged, in ten years.
+## The three rules
 
-There is exactly one script on the site — `assets/compare.js`, about thirty
-lines of first-party vanilla JavaScript that turns the before/after block
-into a draggable comparison. No library, no CDN, nothing to install, and the
-page is complete without it. That is the bar anything else has to clear.
+An earlier version of this file banned frameworks, build steps and
+JavaScript outright. That rule was aimed at the right target but described
+it badly, and it got bent the first time a good idea came along. Here is
+what it was actually protecting.
+
+### 1. Zero money
+
+Nothing on or around this site may cost anything, now or on a delay.
+
+Free tiers count as free only while they are: form services, comment
+widgets and analytics typically cap at a low monthly volume and then bill.
+Before adopting one, write down its ceiling and what happens at the
+ceiling. The risk is accumulation rather than any single charge — one small
+monthly tool is nothing, five of them arriving separately over a year is a
+bill nobody decided to pay.
+
+Current incremental run rate is **zero**. Pages is free for public repos
+and the domain is already committed. Keep it there.
+
+### 2. One person must be able to edit and deploy this site in five years, with no toolchain archaeology
+
+- **First-party JavaScript: unrestricted.** It is just files in the repo.
+- **Third-party libraries: allowed, but never from a CDN.** A CDN link is a
+  permanent dependency on someone else's uptime and versioning, and it
+  fails *silently* years later. If a library earns its place, **vendor it**
+  — copy the file into `assets/`, record its version and licence here, done.
+- **Build steps and static site generators: not banned, triggered.** At
+  five pages, duplicating the header and footer is cheaper than a
+  toolchain. That flips at roughly **ten pages or five devlog entries**,
+  whichever lands first — revisit then, not before. If it is ever
+  revisited, prefer a single-binary generator (Hugo) over an
+  npm-dependency one: the failure being avoided is `npm install` not
+  working in 2031.
+- No paid fonts, no tracking scripts, no third-party embeds that phone
+  home without a stated reason.
+
+### 3. Confidentiality — unchanged
+
+No game codenames, no revenue figures, no release dates, no AI-generated
+images presented as final art. The confidentiality grep stays in the check
+suite. See "What never goes on this site" at the end of this file.
+
+### What that means in practice today
+
+One script, `assets/compare.js` — about sixty lines of first-party vanilla
+JavaScript that turns the before/after block into a draggable comparison.
+No library, no CDN, nothing to install, and the page is complete without
+it. Nothing is vendored yet; when something is, it gets a row here with its
+version and licence.
 
 ## Layout
 
@@ -18,6 +62,7 @@ index.html                     Studio landing page
 geomancer/index.html           Geomancer — pitch, features, gallery
 devlog/index.html              Devlog venue — entry list, newest first
 devlog/geomancer-devlog-1.html Devlog entry
+contact/index.html             Contact — routed by intent
 assets/site.css                All site styles
 assets/compare.js              Before/after slider (the only script)
 assets/shots/                  Web images (WebP + JPEG), generated
@@ -27,8 +72,9 @@ CNAME .nojekyll                Domain and Pages configuration — leave alone
 ```
 
 The header and footer are duplicated in each page rather than shared by a
-template. That is the accepted trade for having no build step. If you change
-one, change all four.
+template. That is the accepted trade for having no build step. **If you
+change one, change all five** — and note that this duplication is exactly
+what the ten-page trigger in Rule 2 is watching.
 
 **Each product gets a directory**, so `/geomancer/` can grow a changelog,
 docs or a press kit later without moving anything. Internal links point at
@@ -95,6 +141,16 @@ dimensions were known in advance.
    `.verified-note` paragraph.
 4. Add a `<li>` to the top of `.entry-list` in `devlog/index.html`. Newest
    first.
+5. **If the entry is about a product, add the same `<li>` to that product
+   page's "Latest from the devlog" strip** — `geomancer/index.html` has one.
+   The strip is a filtered view of the devlog, but with no build step the
+   filtering is done by hand, so a product entry is listed in two places.
+   Carry the `data-product` attribute across; it is the tag a generator
+   would filter on if one ever arrives.
+
+That is three files per entry. It is fine at this size and it is precisely
+the cost Rule 2's trigger exists to catch — when it stops being fine, that
+is the signal, not a reason to improvise a build step early.
 
 **Entries are dated logs.** Each one says when its figures were checked and
 reports what was true that day. An entry does not get edited later because
@@ -171,6 +227,8 @@ Before this goes to `main`:
 - [ ] Remove the `.pending` banner from `devlog/geomancer-devlog-1.html`.
 - [ ] Search the repository for `PENDING` — it should return nothing.
 - [ ] Check every link resolves.
+- [ ] Confirm the devlog strip on `geomancer/index.html` matches
+      `devlog/index.html`.
 
 Nothing on the site carries a release date, and nothing should. "When it's
 ready" is the promise.

@@ -832,6 +832,14 @@ figcaption {
     margin-bottom: 2.5rem;
 }
 
+/* The email address on the contact page, under each intent. */
+.contact-route {
+    margin-top: 1rem;
+    margin-bottom: 0;
+    font-size: 0.95rem;
+    word-break: break-word;
+}
+
 .entry-date {
     font-size: 0.85rem;
     letter-spacing: 0.1em;
