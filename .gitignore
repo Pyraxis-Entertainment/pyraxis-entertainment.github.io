@@ -1,0 +1,13 @@
+# Raw capture PNGs never enter this repository.
+# The committed web set (WebP + JPEG) is derived from them by
+# tools/derive-shots.py — see README.md. The source captures live in the
+# studio marketing folder, outside this repo.
+assets/shots/**/*.png
+assets/shots/_raw/
+
+# OS and editor cruft
+Thumbs.db
+desktop.ini
+.DS_Store
+*.swp
+*~
