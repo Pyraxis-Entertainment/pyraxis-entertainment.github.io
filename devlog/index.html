@@ -3,41 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pyraxis Entertainment — Building worlds worth fighting for.</title>
-    <meta name="description" content="Pyraxis Entertainment — Indie game studio building ambitious games and tools for the gaming world.">
-    <link rel="canonical" href="https://pyraxisentertainment.com/">
-    <meta property="og:title" content="Pyraxis Entertainment">
-    <meta property="og:description" content="Indie game studio. Building worlds worth fighting for.">
-    <meta property="og:url" content="https://pyraxisentertainment.com/">
+    <title>Devlog — Pyraxis Entertainment</title>
+    <meta name="description" content="Development notes from Pyraxis Entertainment — what shipped, what broke, and what we learned fixing it.">
+    <link rel="canonical" href="https://pyraxisentertainment.com/devlog/">
+    <meta property="og:title" content="Devlog — Pyraxis Entertainment">
+    <meta property="og:description" content="Development notes from the studio — what shipped, what broke, and what we learned fixing it.">
+    <meta property="og:url" content="https://pyraxisentertainment.com/devlog/">
     <meta property="og:type" content="website">
     <meta property="og:image" content="https://pyraxisentertainment.com/assets/og-image.jpg">
     <meta property="og:image:alt" content="Aerial view of an island in Unreal Engine: ocean, lakes and winding rivers, shorelines shaded by shallow-water materials.">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="theme-color" content="#12121A">
-    <link rel="icon" type="image/svg+xml" href="favicon.svg">
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
-    <link rel="icon" type="image/png" sizes="64x64" href="favicon-64.png">
-    <link rel="icon" type="image/png" sizes="128x128" href="favicon-128.png">
-    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <link rel="icon" type="image/x-icon" href="../favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
+    <link rel="icon" type="image/png" sizes="64x64" href="../favicon-64.png">
+    <link rel="icon" type="image/png" sizes="128x128" href="../favicon-128.png">
+    <link rel="apple-touch-icon" href="../apple-touch-icon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Michroma&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/site.css">
+    <link rel="stylesheet" href="../assets/site.css">
 </head>
 <body>
     <a class="skip-link" href="#main">Skip to content</a>
 
     <header class="site-header">
         <div class="wrap">
-            <a class="brand" href="index.html">
+            <a class="brand" href="../index.html">
                 <span class="brand-mark" aria-hidden="true">P</span>
                 <span class="brand-name">Pyraxis Entertainment</span>
             </a>
             <nav class="site-nav" aria-label="Primary">
-                <a href="index.html" aria-current="page">Studio</a>
-                <a href="geomancer.html">Geomancer</a>
-                <a href="devlog/index.html">Devlog</a>
+                <a href="../index.html">Studio</a>
+                <a href="../geomancer.html">Geomancer</a>
+                <a href="index.html" aria-current="page">Devlog</a>
             </nav>
         </div>
     </header>
@@ -45,61 +45,36 @@
     <main id="main">
         <section class="hero">
             <div class="wrap">
-                <div class="hero-mark" aria-hidden="true"><span>P</span></div>
-                <h1 class="wordmark">Pyraxis Entertainment</h1>
-                <p class="tagline">Building worlds worth fighting for.</p>
-                <hr class="rule">
-                <p class="lede">We are an independent studio in the United Kingdom, building ambitious worlds — and the tools that make them possible.</p>
-                <div class="button-row">
-                    <a class="btn" href="geomancer.html">Geomancer <span class="btn-arrow" aria-hidden="true">&rarr;</span></a>
-                    <a class="btn" href="devlog/index.html">Read the devlog <span class="btn-arrow" aria-hidden="true">&rarr;</span></a>
-                </div>
-            </div>
-        </section>
-
-        <section>
-            <div class="wrap">
-                <p class="eyebrow">The studio</p>
-                <h2>One person, two jobs, no shortcuts</h2>
-                <div class="prose">
-                    <p>Pyraxis Entertainment is a games-led studio based in the UK. Today it is one developer, working on two things at once: <strong>Geomancer</strong>, a worldbuilding toolkit for Unreal Engine 5, and the first game the studio is being built to make.</p>
-                    <p>We would rather be honest about that than impressive about it. The tools are further along than the game. There are no release dates on this site, because we are building both properly rather than quickly, and a date we cannot keep is worth less than no date at all.</p>
-                    <p>What we can commit to is showing the work as it happens — the wins, and the parts that go wrong. That is what the devlog is for.</p>
-                </div>
-            </div>
-        </section>
-
-        <section>
-            <div class="wrap">
-                <div class="split">
-                    <div>
-                        <p class="eyebrow">First product</p>
-                        <h2 style="margin-top:0">Geomancer</h2>
-                        <p class="lede">Give it any terrain, and it gives you back a world that looks real.</p>
-                        <p>A worldbuilding toolkit for Unreal Engine 5, starting with water that actually understands the landscape underneath it. Oceans, lakes and rivers placed from the terrain's own shape — no splines to draw, no basins to hunt for by hand.</p>
-                        <div class="button-row">
-                            <a class="btn" href="geomancer.html">What it does today <span class="btn-arrow" aria-hidden="true">&rarr;</span></a>
-                        </div>
-                    </div>
-                    <figure style="margin:0">
-                        <picture>
-                            <source srcset="assets/shots/geomancer-island-hero.webp" type="image/webp">
-                            <img src="assets/shots/geomancer-island-hero.jpg" width="1920" height="1080" loading="lazy" decoding="async" alt="Aerial view of an island in Unreal Engine: ocean, lakes and winding rivers, shorelines shaded by shallow-water materials.">
-                        </picture>
-                        <figcaption>The terrain textures here are a studio material placed by slope and height — Geomancer's job today is the water.</figcaption>
-                    </figure>
-                </div>
-            </div>
-        </section>
-
-        <section>
-            <div class="wrap">
                 <p class="eyebrow">Devlog</p>
-                <h2 style="margin-top:0">The work, as it happens</h2>
-                <p class="lede">Development notes from the studio — what shipped, what broke, and what we learned fixing it.</p>
-                <div class="button-row">
-                    <a class="btn" href="devlog/index.html">Read the devlog <span class="btn-arrow" aria-hidden="true">&rarr;</span></a>
+                <h1>The work, as it happens</h1>
+                <hr class="rule">
+                <p class="lede">Development notes from the studio — what shipped, what broke, and what we learned fixing it. Every entry is a dated log: it reports what was true on the day it was written, and it stays that way.</p>
+            </div>
+        </section>
+
+        <section style="padding-top:0">
+            <div class="wrap">
+                <!-- REMOVE THIS BLOCK BEFORE THE SITE GOES LIVE.
+                     It is the guard against publishing an entry whose date and
+                     figures have not been set. See README.md, "Publishing". -->
+                <div class="pending" role="note">
+                    <p class="pending-label">Not published — this venue has no live entries yet</p>
+                    <ul>
+                        <li>Entry&nbsp;1's publication date is not set.</li>
+                        <li>Entry&nbsp;1 is still waiting on two captures.</li>
+                    </ul>
+                    <p style="margin-top:0.75rem;font-size:0.9rem;color:var(--text-muted)">Remove this block, and the matching block on the entry page, when both are resolved.</p>
                 </div>
+
+                <ul class="entry-list">
+                    <li>
+                        <a class="card" href="geomancer-devlog-1.html">
+                            <p class="entry-meta">Date pending &middot; Geomancer</p>
+                            <p class="entry-title">Geomancer Devlog #1 — the water knows where to go</p>
+                            <p class="entry-summary">One click on a map I had never opened before, and the whole thing came back dressed: ocean, lakes, rivers. Then I flew further than I ever had, and two brand-new bugs fell out.</p>
+                        </a>
+                    </li>
+                </ul>
             </div>
         </section>
     </main>

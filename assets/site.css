@@ -1,0 +1,746 @@
+/* ==========================================================================
+   Pyraxis Entertainment — site styles
+   Plain CSS. No framework, no build step, no dependencies.
+
+   Tokens inherited from the original one-page site rather than re-derived,
+   so the whole site reads as one family.
+
+   Palette rules (Studio Standards v2):
+     - never pure black, never pure white on a designed surface
+     - Warm Gold is the workhorse accent; Crimson is the accent's accent
+     - body copy is Warm White on Void (AAA); gold is for headings and rules
+   ========================================================================== */
+
+:root {
+    --void: #12121A;
+    --charcoal: #1A1A22;
+    --warm-gold: #C9963C;
+    --crimson: #8B1E2F;
+    --warm-white: #F0EDE6;
+
+    --gold-glow: rgba(201, 150, 60, 0.15);
+    --gold-glow-strong: rgba(201, 150, 60, 0.3);
+
+    /* Border and rule tints, derived from Warm Gold. */
+    --rule-faint: rgba(201, 150, 60, 0.1);
+    --rule: rgba(201, 150, 60, 0.22);
+    --rule-strong: rgba(201, 150, 60, 0.35);
+
+    /* Text ladder. Every step below is >= 4.5:1 on Void (WCAG AA).
+       The original footer sat at 0.2 (1.75:1) and is deliberately not
+       carried over — it would have failed on all four pages. */
+    --text: var(--warm-white);
+    --text-muted: rgba(240, 237, 230, 0.78);
+    --text-dim: rgba(240, 237, 230, 0.55);
+
+    --measure: 68ch;
+    --page: 1100px;
+}
+
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+}
+
+body {
+    font-family: 'DM Sans', 'Inter', 'Segoe UI', sans-serif;
+    font-weight: 300;
+    background-color: var(--void);
+    color: var(--text);
+    line-height: 1.65;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Subtle noise texture overlay — carried over from the one-pager. */
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Radial gold glow behind the top of the page. */
+body::after {
+    content: '';
+    position: absolute;
+    top: -240px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 900px;
+    height: 900px;
+    max-width: 160vw;
+    background: radial-gradient(circle, var(--gold-glow) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Shared furniture
+   -------------------------------------------------------------------------- */
+
+.wrap {
+    width: 100%;
+    max-width: var(--page);
+    margin-inline: auto;
+    padding-inline: 1.5rem;
+}
+
+main {
+    flex: 1 0 auto;
+    position: relative;
+    z-index: 1;
+}
+
+a {
+    color: var(--warm-gold);
+    text-decoration-color: var(--rule-strong);
+    text-underline-offset: 0.2em;
+}
+
+a:hover {
+    text-decoration-color: var(--warm-gold);
+}
+
+/* Visible keyboard focus. The original site had none. */
+a:focus-visible,
+button:focus-visible {
+    outline: 2px solid var(--warm-gold);
+    outline-offset: 3px;
+    border-radius: 3px;
+}
+
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 100;
+    background: var(--charcoal);
+    color: var(--warm-white);
+    padding: 0.75rem 1.25rem;
+    border: 1px solid var(--rule-strong);
+    border-radius: 0 0 8px 0;
+}
+
+.skip-link:focus {
+    left: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Header
+   -------------------------------------------------------------------------- */
+
+.site-header {
+    position: relative;
+    z-index: 2;
+    border-bottom: 1px solid var(--rule-faint);
+}
+
+.site-header .wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    padding-block: 1.25rem;
+}
+
+.brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.8rem;
+    text-decoration: none;
+    color: inherit;
+}
+
+.brand-mark {
+    width: 38px;
+    height: 38px;
+    flex-shrink: 0;
+    border-radius: 9px;
+    background: var(--void);
+    border: 2px solid var(--warm-gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Michroma', sans-serif;
+    font-size: 0.95rem;
+    line-height: 1;
+    color: var(--warm-gold);
+    box-shadow: 0 0 18px var(--gold-glow);
+    transition: box-shadow 0.3s ease;
+}
+
+.brand:hover .brand-mark {
+    box-shadow: 0 0 24px var(--gold-glow-strong);
+}
+
+/* Michroma is used for the wordmark ONLY, uppercase, 0.12–0.16em tracking. */
+.brand-name {
+    font-family: 'Michroma', sans-serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--warm-gold);
+}
+
+.site-nav {
+    display: flex;
+    gap: 1.75rem;
+    font-size: 0.92rem;
+}
+
+.site-nav a {
+    color: var(--text-muted);
+    text-decoration: none;
+    padding-block: 0.2rem;
+    border-bottom: 1px solid transparent;
+    transition: color 0.25s ease, border-color 0.25s ease;
+}
+
+.site-nav a:hover {
+    color: var(--warm-white);
+    border-bottom-color: var(--rule-strong);
+}
+
+.site-nav a[aria-current="page"] {
+    color: var(--warm-gold);
+    border-bottom-color: var(--warm-gold);
+}
+
+/* --------------------------------------------------------------------------
+   Typography
+   -------------------------------------------------------------------------- */
+
+h1, h2, h3 {
+    font-family: 'DM Sans', 'Inter', 'Segoe UI', sans-serif;
+    font-weight: 500;
+    line-height: 1.2;
+    color: var(--warm-gold);
+    letter-spacing: -0.01em;
+}
+
+h1 {
+    font-size: clamp(2rem, 5vw, 3rem);
+}
+
+h2 {
+    font-size: clamp(1.4rem, 3vw, 1.9rem);
+    margin-top: 3rem;
+    margin-bottom: 1rem;
+}
+
+h3 {
+    font-size: 1.15rem;
+    color: var(--warm-white);
+    margin-bottom: 0.4rem;
+}
+
+p {
+    margin-bottom: 1.15rem;
+}
+
+strong {
+    font-weight: 500;
+    color: var(--warm-white);
+}
+
+em {
+    font-style: italic;
+}
+
+.lede {
+    font-size: clamp(1.05rem, 2.2vw, 1.25rem);
+    color: var(--text-muted);
+    max-width: var(--measure);
+}
+
+.tagline {
+    font-style: italic;
+    font-size: 1.05rem;
+    color: var(--text-muted);
+}
+
+.eyebrow {
+    font-size: 0.78rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--warm-gold);
+    margin-bottom: 0.75rem;
+}
+
+.rule {
+    width: 56px;
+    height: 1px;
+    border: 0;
+    background: linear-gradient(90deg, var(--warm-gold), transparent);
+    margin-block: 2.5rem;
+}
+
+/* Prose column — used by devlog entries. */
+.prose {
+    max-width: var(--measure);
+}
+
+.prose ul {
+    margin: 0 0 1.5rem 1.1rem;
+}
+
+.prose li {
+    margin-bottom: 0.9rem;
+    padding-left: 0.3rem;
+}
+
+.prose li::marker {
+    color: var(--warm-gold);
+}
+
+/* --------------------------------------------------------------------------
+   Sections and hero
+   -------------------------------------------------------------------------- */
+
+section {
+    padding-block: 3.5rem;
+}
+
+.hero {
+    padding-block: clamp(3.5rem, 9vw, 6rem);
+}
+
+.hero-mark {
+    width: 76px;
+    height: 76px;
+    border-radius: 16px;
+    background: var(--void);
+    border: 2px solid var(--warm-gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.75rem;
+    box-shadow: 0 0 30px var(--gold-glow), 0 0 60px rgba(201, 150, 60, 0.06);
+}
+
+.hero-mark span {
+    font-family: 'Michroma', sans-serif;
+    font-size: 1.9rem;
+    line-height: 1;
+    color: var(--warm-gold);
+}
+
+/* The full wordmark, Michroma, wordmark-only use. */
+.wordmark {
+    font-family: 'Michroma', sans-serif;
+    font-size: clamp(1rem, 3.4vw, 1.6rem);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--warm-gold);
+    line-height: 1.45;
+    margin-bottom: 1.1rem;
+}
+
+.button-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.9rem;
+    margin-top: 2rem;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.75rem 1.4rem;
+    border-radius: 10px;
+    background: var(--charcoal);
+    border: 1px solid var(--rule);
+    color: var(--warm-white);
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.btn:hover {
+    border-color: var(--rule-strong);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 20px rgba(201, 150, 60, 0.08);
+}
+
+.btn-arrow {
+    color: var(--warm-gold);
+}
+
+/* Crimson call-to-action.
+   RESERVED — deliberately unused at v1. This is the "View on Fab" button for
+   the moment the Geomancer listing goes live. Geomancer has no store page
+   yet, so the page states that in a sentence rather than offering a button
+   that goes nowhere. Do not delete this as dead code: it is the one
+   sanctioned Crimson use on the site. */
+.cta-crimson {
+    background: var(--crimson);
+    border-color: var(--crimson);
+    color: var(--warm-white);
+}
+
+.cta-crimson:hover {
+    border-color: var(--crimson);
+    box-shadow: 0 4px 22px rgba(139, 30, 47, 0.35);
+}
+
+/* --------------------------------------------------------------------------
+   Cards
+   -------------------------------------------------------------------------- */
+
+.card {
+    background: var(--charcoal);
+    border: 1px solid var(--rule-faint);
+    border-radius: 12px;
+    padding: 1.6rem;
+    transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+a.card {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+}
+
+a.card:hover {
+    border-color: var(--rule-strong);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 26px rgba(201, 150, 60, 0.07);
+}
+
+.card-grid {
+    display: grid;
+    gap: 1.25rem;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.feature-list {
+    display: grid;
+    gap: 1.25rem;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    margin-top: 2rem;
+    list-style: none;
+}
+
+.feature-list p {
+    margin-bottom: 0;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+}
+
+.split {
+    display: grid;
+    gap: 2.5rem;
+    grid-template-columns: 1fr;
+    align-items: center;
+}
+
+@media (min-width: 860px) {
+    .split {
+        grid-template-columns: 1.05fr 1fr;
+        gap: 3.5rem;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   Images
+   -------------------------------------------------------------------------- */
+
+figure {
+    margin-block: 2.25rem;
+}
+
+figure img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    border: 1px solid var(--rule-faint);
+    background: var(--charcoal);
+}
+
+figcaption {
+    margin-top: 0.75rem;
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    line-height: 1.55;
+}
+
+/* Wide figures inside a prose column may bleed slightly wider on desktop. */
+@media (min-width: 1000px) {
+    .prose .bleed {
+        width: calc(100% + 8rem);
+        margin-left: -4rem;
+    }
+}
+
+.gallery {
+    display: grid;
+    gap: 1.75rem;
+    grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+}
+
+.gallery figure {
+    margin: 0;
+}
+
+@media (max-width: 700px) {
+    .gallery {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   Pending / placeholder blocks
+   These are deliberately loud. Nothing carrying one of these may ship.
+   Crimson is the alert colour in the brand palette; this is that use.
+   -------------------------------------------------------------------------- */
+
+.pending {
+    border: 2px dashed var(--crimson);
+    border-radius: 10px;
+    background: rgba(139, 30, 47, 0.08);
+    padding: 1.4rem 1.5rem;
+    margin-block: 2rem;
+}
+
+.pending-label {
+    font-size: 0.75rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--warm-white);
+    font-weight: 500;
+    margin-bottom: 0.75rem;
+}
+
+.pending-label::before {
+    content: '\25C6';
+    color: var(--crimson);
+    margin-right: 0.6rem;
+    /* Crimson is decorative here; the word "PENDING" carries the meaning,
+       so nothing depends on colour alone. */
+}
+
+.pending ul {
+    margin: 0 0 0 1.1rem;
+}
+
+.pending li {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: 0.35rem;
+}
+
+.pending p:last-child {
+    margin-bottom: 0;
+}
+
+.pending code {
+    font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace;
+    font-size: 0.85em;
+    color: var(--warm-gold);
+}
+
+/* A reserved slot standing in for a shot that has not been captured. */
+.shot-pending {
+    border: 2px dashed var(--crimson);
+    border-radius: 10px;
+    background: rgba(139, 30, 47, 0.08);
+    padding: clamp(2rem, 8vw, 3.5rem) 1.5rem;
+    text-align: center;
+}
+
+.shot-pending .pending-label {
+    margin-bottom: 0.5rem;
+}
+
+.shot-pending p {
+    margin-bottom: 0;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+/* --------------------------------------------------------------------------
+   Devlog entry list
+   -------------------------------------------------------------------------- */
+
+.entry-list {
+    list-style: none;
+    display: grid;
+    gap: 1.25rem;
+    margin-top: 2.5rem;
+}
+
+.entry-meta {
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 0.5rem;
+}
+
+.entry-title {
+    font-size: 1.25rem;
+    color: var(--warm-gold);
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    line-height: 1.3;
+}
+
+.entry-summary {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    margin-bottom: 0;
+}
+
+.entry-header {
+    margin-bottom: 2.5rem;
+}
+
+.entry-date {
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 0.75rem;
+}
+
+/* The snapshot convention: every entry is a dated log and says when its
+   figures were checked, so it stays correct as the tool moves on. */
+.verified-note {
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    border-left: 2px solid var(--rule);
+    padding-left: 0.9rem;
+    margin-block: 2rem;
+}
+
+/* --------------------------------------------------------------------------
+   Footer
+   -------------------------------------------------------------------------- */
+
+.site-footer {
+    position: relative;
+    z-index: 1;
+    flex-shrink: 0;
+    margin-top: 4rem;
+    border-top: 1px solid var(--rule-faint);
+    background: rgba(26, 26, 34, 0.5);
+    padding-block: 3rem;
+}
+
+.footer-tagline {
+    font-family: 'DM Sans', 'Inter', 'Segoe UI', sans-serif;
+    font-style: italic;
+    color: var(--text-muted);
+    margin-bottom: 1.75rem;
+}
+
+.follow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-bottom: 2rem;
+}
+
+.follow a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.55rem 0.9rem;
+    background: var(--charcoal);
+    border: 1px solid var(--rule-faint);
+    border-radius: 8px;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: border-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+}
+
+.follow a:hover {
+    border-color: var(--rule-strong);
+    color: var(--warm-white);
+    transform: translateY(-1px);
+}
+
+.follow svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    fill: currentColor;
+    opacity: 0.8;
+}
+
+.follow a:hover svg {
+    fill: var(--warm-gold);
+    opacity: 1;
+}
+
+/* 0.55 alpha = 5.43:1 on Void, WCAG AA. The original 0.2 was 1.75:1. */
+.footer-legal {
+    font-size: 0.78rem;
+    letter-spacing: 0.05em;
+    color: var(--text-dim);
+    margin-bottom: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 640px) {
+    .site-header .wrap {
+        padding-block: 1rem;
+    }
+
+    .site-nav {
+        gap: 1.25rem;
+        font-size: 0.88rem;
+        width: 100%;
+    }
+
+    section {
+        padding-block: 2.5rem;
+    }
+
+    .follow a {
+        font-size: 0.8rem;
+        padding: 0.5rem 0.75rem;
+    }
+
+    .prose .bleed {
+        width: 100%;
+        margin-left: 0;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   Motion
+   -------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}

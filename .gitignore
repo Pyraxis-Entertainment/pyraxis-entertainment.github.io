@@ -5,6 +5,10 @@
 assets/shots/**/*.png
 assets/shots/_raw/
 
+# Local path to the capture folder. This repository is public, so the
+# studio's folder layout stays out of it.
+tools/source-path.txt
+
 # OS and editor cruft
 Thumbs.db
 desktop.ini

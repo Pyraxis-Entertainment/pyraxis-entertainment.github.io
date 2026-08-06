@@ -9,9 +9,12 @@ Requires: Pillow (pip install Pillow)
 
 Usage
 -----
-    python tools/derive-shots.py
-    python tools/derive-shots.py --source "D:/some/other/Shots"
+    python tools/derive-shots.py --source "path/to/your/Shots"
     python tools/derive-shots.py --check      # report only, write nothing
+
+To avoid retyping the path, put it in tools/source-path.txt, which is
+untracked. This repository is public, so the capture folder location is
+kept out of it deliberately.
 
 How the healing works
 ---------------------
@@ -36,7 +39,7 @@ except ImportError:  # pragma: no cover
     sys.exit("Pillow is required:  pip install Pillow")
 
 REPO = Path(__file__).resolve().parent.parent
-DEFAULT_SOURCE = REPO.parent / "_Studio" / "09_Marketing" / "Devlog_1" / "Shots"
+SOURCE_CONFIG = REPO / "tools" / "source-path.txt"   # untracked; see .gitignore
 OUT_DIR = REPO / "assets" / "shots"
 OG_PATH = REPO / "assets" / "og-image.jpg"
 
@@ -152,13 +155,23 @@ def derive_og(src: Path, check: bool) -> str:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--source", type=Path, default=DEFAULT_SOURCE,
+    parser.add_argument("--source", type=Path, default=None,
                         help="folder holding the canonical capture PNGs")
     parser.add_argument("--check", action="store_true",
                         help="report what would happen; write nothing")
     args = parser.parse_args()
 
-    source: Path = args.source
+    source: Path | None = args.source
+    if source is None and SOURCE_CONFIG.is_file():
+        text = SOURCE_CONFIG.read_text(encoding="utf-8").strip()
+        if text:
+            source = Path(text)
+    if source is None:
+        sys.exit(
+            "No capture folder given.\n"
+            "  Pass --source \"path/to/Shots\", or write that path into\n"
+            f"  {SOURCE_CONFIG.relative_to(REPO)} (untracked)."
+        )
     if not source.is_dir():
         sys.exit(f"Source folder not found: {source}")
 
