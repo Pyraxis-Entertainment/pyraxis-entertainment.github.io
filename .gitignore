@@ -9,6 +9,9 @@ assets/shots/_raw/
 # studio's folder layout stays out of it.
 tools/source-path.txt
 
+# Local tooling config. Never belongs in a public repository.
+.claude/
+
 # OS and editor cruft
 Thumbs.db
 desktop.ini
