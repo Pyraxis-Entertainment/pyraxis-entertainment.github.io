@@ -80,42 +80,63 @@ def _row_mean(im: Image.Image, y: int, w: int) -> tuple[float, float, float]:
     return tuple(sum(p[i] for p in px) / len(px) for i in range(3))  # type: ignore[return-value]
 
 
-def detect_top_sliver(im: Image.Image, tol: float = 6.0,
-                      cap_frac: float = 0.015, margin: int = 3) -> int:
-    """Height in pixels of a flat, light editor-UI strip along the top edge.
+def _band_depth(rows: list, edge: float, max_spread: float, margin: int) -> int:
+    """Given row means ordered from an outer edge inward, return the depth of
+    a uniform strip of editor chrome, or 0 if the edge is ordinary content."""
+    cut = 0
+    for i in range(1, len(rows)):
+        if max(abs(a - b) for a, b in zip(rows[i], rows[i - 1])) > edge:
+            cut = i
+            break
+    if cut == 0:
+        return 0
+    # Measure uniformity over the solid part of the band, skipping the
+    # anti-aliased ramp at its inner edge.
+    solid = rows[:max(1, int(cut * 0.6))]
+    spread = max(max(r[c] for r in solid) - min(r[c] for r in solid)
+                 for c in range(3))
+    if spread > max_spread:              # a gradient, not a flat UI strip
+        return 0
+    return cut + margin
 
-    Some banked captures include a thin sliver of editor chrome at the top.
-    This finds it by measurement rather than a hardcoded per-file number, so
-    that when a shot is re-captured cleanly the crop simply becomes zero and
-    no real image data is lost. That keeps the canonical-filename healing
-    property intact: overwrite the source, re-run, done.
 
-    Returns 0 when the top edge is ordinary image content (sky, haze, water).
+def detect_chrome(im: Image.Image, edge: float = 25.0, max_spread: float = 15.0,
+                  cap_frac: float = 0.12, margin: int = 2) -> tuple[int, int]:
+    """Depth in pixels of editor chrome along the top and bottom edges.
+
+    Some banked captures include a strip of editor UI above and/or below the
+    render — a light strip at the top, a dark toolbar at the bottom. These are
+    found by measurement rather than hardcoded per file, so that when a shot
+    is re-captured cleanly the crop becomes zero and no real image data is
+    lost. That keeps canonical-filename healing intact: overwrite the source,
+    re-run, done.
+
+    A strip is not perfectly flat — it can drift a few levels across its
+    depth — so it is identified by two things together: a sharp row-to-row
+    transition where it ends, and near-uniformity across the strip itself.
+    A sky gradient has the second property but not the first; a horizon has
+    the first but not the second.
+
+    Every crop is reported on stdout, so an unexpected one is visible rather
+    than silent.
     """
     w, h = im.size
     cap = max(4, int(h * cap_frac))
-    first = _row_mean(im, 0, w)
-    if min(first) < 180:            # a UI strip is light; sky gradients are not
-        return 0
-    y = 1
-    while y < cap:
-        row = _row_mean(im, y, w)
-        if max(abs(a - b) for a, b in zip(row, first)) > tol:
-            break
-        y += 1
-    if y >= cap:                    # flat all the way down: not a strip
-        return 0
-    return min(y + margin, cap)
+    top_rows = [_row_mean(im, y, w) for y in range(cap)]
+    bottom_rows = [_row_mean(im, h - 1 - y, w) for y in range(cap)]
+    return (_band_depth(top_rows, edge, max_spread, margin),
+            _band_depth(bottom_rows, edge, max_spread, margin))
 
 
 def derive_one(src: Path, stem: str, check: bool) -> str:
     im = Image.open(src).convert("RGB")
-    cut = detect_top_sliver(im)
-    if cut:
-        im = im.crop((0, cut, im.size[0], im.size[1]))
+    top, bottom = detect_chrome(im)
+    if top or bottom:
+        im = im.crop((0, top, im.size[0], im.size[1] - bottom))
     w, h = im.size
     height = round(h * WIDTH / w)
-    note = f" (cropped {cut}px UI sliver)" if cut else ""
+    bits = ([f"{top}px top"] if top else []) + ([f"{bottom}px bottom"] if bottom else [])
+    note = f" (cropped {', '.join(bits)})" if bits else ""
     if check:
         return f"would write {stem}.webp / .jpg at {WIDTH}x{height}{note}"
 
@@ -134,9 +155,9 @@ def derive_one(src: Path, stem: str, check: bool) -> str:
 def derive_og(src: Path, check: bool) -> str:
     """Centre-crop to the Open Graph aspect, then resize."""
     im = Image.open(src).convert("RGB")
-    cut = detect_top_sliver(im)
-    if cut:
-        im = im.crop((0, cut, im.size[0], im.size[1]))
+    top, bottom = detect_chrome(im)
+    if top or bottom:
+        im = im.crop((0, top, im.size[0], im.size[1] - bottom))
     w, h = im.size
     target = OG_SIZE[0] / OG_SIZE[1]
     if w / h > target:                      # too wide - trim the sides
