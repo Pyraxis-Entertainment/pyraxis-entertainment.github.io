@@ -523,13 +523,9 @@ figcaption {
     flex-direction: column;
 }
 
-/* Let a reserved slot fill its grid cell so the gallery stays even while
-   shots are outstanding. */
-.gallery .shot-pending {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+/* A comparison block is the point of the gallery, not one cell of it. */
+.gallery > .compare {
+    grid-column: 1 / -1;
 }
 
 @media (max-width: 700px) {
@@ -595,23 +591,207 @@ figcaption {
     color: var(--warm-gold);
 }
 
-/* A reserved slot standing in for a shot that has not been captured. */
-.shot-pending {
-    border: 2px dashed var(--crimson);
-    border-radius: 10px;
-    background: rgba(139, 30, 47, 0.08);
-    padding: clamp(2rem, 8vw, 3.5rem) 1.5rem;
+/* --------------------------------------------------------------------------
+   Pending media frames
+
+   A slot whose image has not been captured yet. Deliberately QUIET — it has
+   to read as "not photographed yet", not as a broken page. The loud
+   .pending banner at the top of the page is what stops an unfinished site
+   going live; this is not that, and must not try to be.
+
+   The frame holds the final aspect ratio and the real caption sits beneath
+   it already, so when the file lands the image drops in place.
+   -------------------------------------------------------------------------- */
+
+.frame-pending {
+    aspect-ratio: 16 / 9;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.7rem;
+    padding: 1.5rem;
     text-align: center;
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    background:
+        linear-gradient(180deg, rgba(201, 150, 60, 0.05), transparent 55%),
+        var(--charcoal);
 }
 
-.shot-pending .pending-label {
-    margin-bottom: 0.5rem;
+.frame-pending svg {
+    width: 30px;
+    height: 30px;
+    fill: none;
+    stroke: var(--warm-gold);
+    stroke-width: 1.25;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    opacity: 0.65;
 }
 
-.shot-pending p {
-    margin-bottom: 0;
-    font-size: 0.9rem;
-    color: var(--text-muted);
+.frame-pending p {
+    margin: 0;
+    font-size: 0.72rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--warm-gold);
+}
+
+/* --------------------------------------------------------------------------
+   Before/after comparison
+
+   Without JavaScript this is two panes side by side (stacked on narrow
+   screens), each labelled, under one caption — complete and readable on its
+   own. assets/compare.js upgrades it into a draggable comparison by adding
+   .compare--ready. Everything below the "ready" marker is that upgrade; if
+   the script never runs, none of it applies.
+   -------------------------------------------------------------------------- */
+
+.compare {
+    margin-block: 2.25rem;
+}
+
+.compare-stack {
+    display: grid;
+    gap: 1rem;
+}
+
+@media (min-width: 700px) {
+    .compare-stack {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.compare-pane img,
+.compare-pane picture {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+}
+
+.compare-pane-label {
+    margin: 0.6rem 0 0;
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+}
+
+/* ---- upgraded state ---- */
+
+.compare--ready .compare-stack {
+    display: block;
+    position: relative;
+    gap: 0;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.compare--ready .compare-pane[data-compare-pane="after"] {
+    position: absolute;
+    inset: 0;
+    /* Left of the divider shows "before", right of it shows "after". */
+    clip-path: inset(0 0 0 var(--compare-pos, 50%));
+}
+
+.compare--ready .compare-pane img,
+.compare--ready .compare-pane picture,
+.compare--ready .compare-pane .frame-pending {
+    border-radius: 0;
+    height: 100%;
+}
+
+/* In the upgrade the labels become corner badges rather than captions. */
+.compare--ready .compare-pane-label {
+    position: absolute;
+    bottom: 0.75rem;
+    margin: 0;
+    padding: 0.3rem 0.7rem;
+    border-radius: 6px;
+    background: rgba(18, 18, 26, 0.72);
+    color: var(--warm-white);
+    pointer-events: none;
+}
+
+.compare--ready .compare-pane[data-compare-pane="before"] .compare-pane-label {
+    left: 0.75rem;
+}
+
+.compare--ready .compare-pane[data-compare-pane="after"] .compare-pane-label {
+    right: 0.75rem;
+}
+
+.compare-divider {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: var(--compare-pos, 50%);
+    width: 2px;
+    margin-left: -1px;
+    background: var(--warm-gold);
+    pointer-events: none;
+}
+
+.compare-divider::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 38px;
+    height: 38px;
+    transform: translate(-50%, -50%);
+    border: 2px solid var(--warm-gold);
+    border-radius: 50%;
+    background: rgba(18, 18, 26, 0.55);
+    box-shadow: 0 0 18px var(--gold-glow-strong);
+}
+
+/* The control covers the whole image so it can be dragged anywhere, and
+   because it is a real range input it also works from the keyboard and
+   announces itself to a screen reader. */
+.compare-range {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    opacity: 0;
+    cursor: ew-resize;
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+}
+
+.compare-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 44px;
+    height: 44px;
+}
+
+.compare-range::-moz-range-thumb {
+    width: 44px;
+    height: 44px;
+    border: 0;
+    opacity: 0;
+}
+
+/* The input itself is invisible, so focus has to show on the divider. */
+.compare-range:focus-visible ~ .compare-divider,
+.compare-stack:focus-within .compare-divider {
+    outline: 2px solid var(--warm-white);
+    outline-offset: 2px;
+}
+
+/* Only true once the slider exists, so it only appears then. */
+.compare-hint {
+    display: none;
+}
+
+.compare--ready .compare-hint {
+    display: inline;
 }
 
 /* --------------------------------------------------------------------------

@@ -3,18 +3,23 @@
 The Pyraxis Entertainment website. Plain static HTML and CSS, served by
 GitHub Pages from this repository.
 
-**No framework, no CMS, no build step, no JavaScript.** That is deliberate:
-the site should still work, unchanged, in ten years. Anything that would add
-a dependency needs a good reason.
+**No framework, no CMS, no build step, no dependencies.** That is deliberate:
+the site should still work, unchanged, in ten years.
+
+There is exactly one script on the site — `assets/compare.js`, about thirty
+lines of first-party vanilla JavaScript that turns the before/after block
+into a draggable comparison. No library, no CDN, nothing to install, and the
+page is complete without it. That is the bar anything else has to clear.
 
 ## Layout
 
 ```
 index.html                     Studio landing page
-geomancer.html                 Geomancer — pitch, features, gallery
+geomancer/index.html           Geomancer — pitch, features, gallery
 devlog/index.html              Devlog venue — entry list, newest first
 devlog/geomancer-devlog-1.html Devlog entry
 assets/site.css                All site styles
+assets/compare.js              Before/after slider (the only script)
 assets/shots/                  Web images (WebP + JPEG), generated
 assets/og-image.jpg            Social preview card, generated
 tools/derive-shots.py          Image derivation (see below)
@@ -25,14 +30,21 @@ The header and footer are duplicated in each page rather than shared by a
 template. That is the accepted trade for having no build step. If you change
 one, change all four.
 
+**Each product gets a directory**, so `/geomancer/` can grow a changelog,
+docs or a press kit later without moving anything. Internal links point at
+the directory (`geomancer/`, not `geomancer/index.html`) so the canonical URL
+and the linked URL are the same string. A URL is cheap to change now and
+expensive after publication — get it right before the site is live.
+
 ## Local preview
 
 ```bash
 python -m http.server 8000
 ```
 
-Then open <http://localhost:8000/>. Opening the files directly also works,
-since all internal links are relative.
+Then open <http://localhost:8000/>. Use the server rather than opening the
+files directly: links point at directories, which a `file://` page cannot
+resolve.
 
 ## Design rules
 
@@ -57,6 +69,21 @@ Colours are defined once as custom properties at the top of `assets/site.css`.
 
 `.cta-crimson` is defined but unused. It is reserved for a "View on Fab"
 button once the Geomancer listing exists. Do not remove it as dead code.
+
+### Two kinds of placeholder, doing two different jobs
+
+- **`.pending`** — the loud crimson banner at the top of a page. This is the
+  safety net that stops an unfinished page going live. It is ugly on purpose.
+  Do not soften it.
+- **`.frame-pending`** — a media slot whose image has not been shot yet. This
+  one is quiet and in-brand: a thin gold frame on Charcoal holding the final
+  aspect ratio, with the real caption already beneath it. It should read as
+  "not photographed yet", never as "broken".
+
+The frames reserve **16:9**, the native capture aspect. Real captures land
+slightly off that once editor chrome is cropped, so expect a percent or two
+of shift when an image drops in — not the zero it would be if the exact
+dimensions were known in advance.
 
 ## Adding a devlog entry
 
@@ -125,20 +152,23 @@ files whose names contain `Evidence_Comparison`, `_alt_` or `_Raw`.
 
 ## Publishing
 
-The site currently carries **placeholder blocks that must not go live**.
-They are bordered and loud so they cannot be missed.
+The site currently carries **`.pending` banners that must not go live**.
+They are loud and crimson so they cannot be missed. (The quiet media frames
+are fine to show anyone — they are the point of `.frame-pending`.)
 
 Before this goes to `main`:
 
 - [ ] Capture the three outstanding shots and re-run the derive script.
 - [ ] Update every `<img>` `width`/`height` to the values the script prints.
-- [ ] Replace the reserved-slot blocks on `geomancer.html` and the devlog
-      entry with real `<figure>` elements.
+- [ ] Replace each `.frame-pending` on `geomancer/index.html` and the devlog
+      entry with a real `<picture>`. Each reserved slot carries the exact
+      markup and alt text to use in an HTML comment beside it.
 - [ ] Set the entry date in `devlog/geomancer-devlog-1.html`.
 - [ ] Set the figures-verified date in the same file.
 - [ ] Set the date on the entry card in `devlog/index.html`.
-- [ ] Remove the `.pending` block from `devlog/index.html`.
-- [ ] Remove the `.pending` block from `devlog/geomancer-devlog-1.html`.
+- [ ] Remove the `.pending` banner from `geomancer/index.html`.
+- [ ] Remove the `.pending` banner from `devlog/index.html`.
+- [ ] Remove the `.pending` banner from `devlog/geomancer-devlog-1.html`.
 - [ ] Search the repository for `PENDING` — it should return nothing.
 - [ ] Check every link resolves.
 

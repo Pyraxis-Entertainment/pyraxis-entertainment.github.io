@@ -5,39 +5,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Geomancer — Pyraxis Entertainment</title>
     <meta name="description" content="Geomancer is a worldbuilding toolkit for Unreal Engine 5. Give it any terrain, and it gives you back a world that looks real — starting with water that understands the landscape underneath it.">
-    <link rel="canonical" href="https://pyraxisentertainment.com/geomancer.html">
+    <link rel="canonical" href="https://pyraxisentertainment.com/geomancer/">
     <meta property="og:title" content="Geomancer — a worldbuilding toolkit for Unreal Engine 5">
     <meta property="og:description" content="Give it any terrain, and it gives you back a world that looks real. Oceans, lakes and rivers placed from the landscape's own shape.">
-    <meta property="og:url" content="https://pyraxisentertainment.com/geomancer.html">
+    <meta property="og:url" content="https://pyraxisentertainment.com/geomancer/">
     <meta property="og:type" content="website">
     <meta property="og:image" content="https://pyraxisentertainment.com/assets/og-image.jpg">
     <meta property="og:image:alt" content="Aerial view of an island in Unreal Engine: ocean, lakes and winding rivers, shorelines shaded by shallow-water materials.">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="theme-color" content="#12121A">
-    <link rel="icon" type="image/svg+xml" href="favicon.svg">
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
-    <link rel="icon" type="image/png" sizes="64x64" href="favicon-64.png">
-    <link rel="icon" type="image/png" sizes="128x128" href="favicon-128.png">
-    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <link rel="icon" type="image/x-icon" href="../favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
+    <link rel="icon" type="image/png" sizes="64x64" href="../favicon-64.png">
+    <link rel="icon" type="image/png" sizes="128x128" href="../favicon-128.png">
+    <link rel="apple-touch-icon" href="../apple-touch-icon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Michroma&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/site.css">
+    <link rel="stylesheet" href="../assets/site.css">
 </head>
 <body>
     <a class="skip-link" href="#main">Skip to content</a>
 
     <header class="site-header">
         <div class="wrap">
-            <a class="brand" href="index.html">
+            <a class="brand" href="../">
                 <span class="brand-mark" aria-hidden="true">P</span>
                 <span class="brand-name">Pyraxis Entertainment</span>
             </a>
             <nav class="site-nav" aria-label="Primary">
-                <a href="index.html">Studio</a>
-                <a href="geomancer.html" aria-current="page">Geomancer</a>
-                <a href="devlog/index.html">Devlog</a>
+                <a href="../">Studio</a>
+                <a href="./" aria-current="page">Geomancer</a>
+                <a href="../devlog/">Devlog</a>
             </nav>
         </div>
     </header>
@@ -45,6 +45,19 @@
     <main id="main">
         <section class="hero">
             <div class="wrap">
+                <!-- REMOVE THIS BLOCK BEFORE THE SITE GOES LIVE.
+                     The media frames on this page are deliberately quiet, so
+                     this banner is the thing that stops it shipping unfinished.
+                     See README.md, "Publishing". -->
+                <div class="pending" role="note">
+                    <p class="pending-label">Not published — this page is waiting on captures</p>
+                    <ul>
+                        <li>The one-click before/after pair has not been captured.</li>
+                        <li>The basin-fill wetland close-up has not been captured.</li>
+                    </ul>
+                    <p class="pending-note">Remove this block once both frames hold real images.</p>
+                </div>
+
                 <p class="eyebrow">For Unreal Engine 5</p>
                 <h1>Geomancer</h1>
                 <hr class="rule">
@@ -94,40 +107,77 @@
                 <h2>Made by the tool</h2>
 
                 <div class="gallery">
-                    <!-- RESERVED SLOT — the one-click before/after pair.
-                         Fills automatically once Devlog1_A_Before_Template.png and
+                    <!-- RESERVED — the one-click before/after pair.
+                         Once Devlog1_A_Before_Template.png and
                          Devlog1_A_After_Template.png are captured and the derive
-                         script is re-run. See README.md. -->
-                    <figure>
-                        <div class="shot-pending">
-                            <p class="pending-label">Shot pending capture</p>
-                            <p>The one-click before/after pair on Unreal's stock Open World template. Replace this block with the <code>geomancer-template-before</code> / <code>geomancer-template-after</code> figures once captured.</p>
+                         script has run, replace each .frame-pending with:
+
+                           <picture>
+                             <source srcset="../assets/shots/geomancer-template-before.webp" type="image/webp">
+                             <img src="../assets/shots/geomancer-template-before.jpg"
+                                  width="W" height="H" loading="lazy" decoding="async"
+                                  alt="Unreal's stock Open World template terrain: bare hills and valleys, no ocean, lakes or rivers anywhere.">
+                           </picture>
+
+                         and the same for -template-after, whose alt text is:
+                           "The same terrain after one generation pass: coastline, lakes
+                            and a dense network of dressed rivers."
+
+                         Alt text is count-free on purpose so it survives a re-capture.
+                         The derive script prints the width and height to use. -->
+                    <figure class="compare" data-compare
+                            data-compare-label="Drag to compare: the bare terrain on the left, the same terrain one click later on the right.">
+                        <div class="compare-stack">
+                            <div class="compare-pane" data-compare-pane="before">
+                                <div class="frame-pending">
+                                    <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10" r="1.4"/><path d="m4 17 5-5 4 4 3-3 4 4"/></svg>
+                                    <p>Image pending capture</p>
+                                </div>
+                                <p class="compare-pane-label">Before</p>
+                            </div>
+                            <div class="compare-pane" data-compare-pane="after">
+                                <div class="frame-pending">
+                                    <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10" r="1.4"/><path d="m4 17 5-5 4 4 3-3 4 4"/></svg>
+                                    <p>Image pending capture</p>
+                                </div>
+                                <p class="compare-pane-label">After — one click</p>
+                            </div>
                         </div>
+                        <figcaption>Unreal's stock Open World template, before and after a single Generate. Same camera both times, and nothing touched up afterwards. <span class="compare-hint">Drag the divider to compare.</span></figcaption>
                     </figure>
 
                     <figure>
                         <picture>
-                            <source srcset="assets/shots/geomancer-island-hero.webp" type="image/webp">
-                            <img src="assets/shots/geomancer-island-hero.jpg" width="1920" height="1001" loading="lazy" decoding="async" alt="Aerial view of an island in Unreal Engine: ocean, lakes and winding rivers, shorelines shaded by shallow-water materials.">
+                            <source srcset="../assets/shots/geomancer-island-hero.webp" type="image/webp">
+                            <img src="../assets/shots/geomancer-island-hero.jpg" width="1920" height="1001" loading="lazy" decoding="async" alt="Aerial view of an island in Unreal Engine: ocean, lakes and winding rivers, shorelines shaded by shallow-water materials.">
                         </picture>
                         <figcaption>A dressed island: ocean, lakes and rivers, all placed from the terrain. The terrain textures are a studio material placed by slope and height — Geomancer's job today is the water.</figcaption>
                     </figure>
 
                     <figure>
                         <picture>
-                            <source srcset="assets/shots/geomancer-range-complete-after.webp" type="image/webp">
-                            <img src="assets/shots/geomancer-range-complete-after.jpg" width="1920" height="1072" loading="lazy" decoding="async" alt="The same island from extreme altitude, complete edge to edge — far terrain simplified but present.">
+                            <source srcset="../assets/shots/geomancer-range-complete-after.webp" type="image/webp">
+                            <img src="../assets/shots/geomancer-range-complete-after.jpg" width="1920" height="1072" loading="lazy" decoding="async" alt="The same island from extreme altitude, complete edge to edge — far terrain simplified but present.">
                         </picture>
                         <figcaption>The same island from extreme altitude. Far terrain is simplified, but the world stays whole.</figcaption>
                     </figure>
 
-                    <!-- RESERVED SLOT — basin-fill wetland close-up.
-                         Fills once Devlog1_F_Basin_Wetland.png is captured. -->
+                    <!-- RESERVED — basin-fill wetland close-up.
+                         Once Devlog1_F_Basin_Wetland.png is captured, replace the
+                         .frame-pending below with:
+
+                           <picture>
+                             <source srcset="../assets/shots/geomancer-basin-wetland.webp" type="image/webp">
+                             <img src="../assets/shots/geomancer-basin-wetland.jpg"
+                                  width="W" height="H" loading="lazy" decoding="async"
+                                  alt="Close view of a shallow inland basin holding still water as a wetland, grassy shoreline at its rim.">
+                           </picture> -->
                     <figure>
-                        <div class="shot-pending">
-                            <p class="pending-label">Shot pending capture</p>
-                            <p>Close view of a filled inland basin reading as wetland. Replace this block with the <code>geomancer-basin-wetland</code> figure once captured.</p>
+                        <div class="frame-pending">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10" r="1.4"/><path d="m4 17 5-5 4 4 3-3 4 4"/></svg>
+                            <p>Image pending capture</p>
                         </div>
+                        <figcaption>A filled inland basin reading as wetland: a depression with no outlet holds its water instead of swallowing the rivers that feed it.</figcaption>
                     </figure>
                 </div>
             </div>
@@ -196,5 +246,9 @@
             <p class="footer-legal">&copy; 2026 Pyraxis Entertainment</p>
         </div>
     </footer>
+
+    <!-- The only script on the site. Upgrades the before/after block into a
+         draggable comparison; the page is complete without it. -->
+    <script src="../assets/compare.js" defer></script>
 </body>
 </html>
