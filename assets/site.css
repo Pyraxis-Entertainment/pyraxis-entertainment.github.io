@@ -243,6 +243,11 @@ h2 {
     margin-bottom: 1rem;
 }
 
+/* An eyebrow already provides the separation a heading's top margin gives. */
+.eyebrow + h2 {
+    margin-top: 0;
+}
+
 h3 {
     font-size: 1.15rem;
     color: var(--warm-white);
@@ -314,6 +319,23 @@ em {
 
 section {
     padding-block: 3.5rem;
+}
+
+/* Section following one that already supplies the top spacing. */
+.section-flush {
+    padding-top: 0;
+}
+
+.section-snug {
+    padding-top: 1rem;
+}
+
+.section-hero-flush {
+    padding-bottom: 0;
+}
+
+.figure-flush {
+    margin: 0;
 }
 
 .hero {
@@ -561,6 +583,12 @@ figcaption {
     margin-bottom: 0;
 }
 
+.pending-note {
+    margin-top: 0.75rem;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
 .pending code {
     font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace;
     font-size: 0.85em;
@@ -609,6 +637,7 @@ figcaption {
     font-size: 1.25rem;
     color: var(--warm-gold);
     font-weight: 500;
+    margin-top: 0;
     margin-bottom: 0.5rem;
     line-height: 1.3;
 }

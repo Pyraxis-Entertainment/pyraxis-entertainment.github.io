@@ -114,6 +114,12 @@ change, because they already point at stable generated names.
 Capture the three outstanding shots to exactly those filenames and the
 script picks them up with no further changes.
 
+**One thing the script cannot do for you.** Some captures have a strip of
+editor UI along the top or bottom edge; the script detects and crops it,
+which changes the image's height. So after a re-capture, update the `width`
+and `height` attributes on the matching `<img>` tags — the script prints the
+exact values to use. Stale numbers make the page jump as images load.
+
 Anything not in that table is not site material. The script also refuses
 files whose names contain `Evidence_Comparison`, `_alt_` or `_Raw`.
 
@@ -125,6 +131,7 @@ They are bordered and loud so they cannot be missed.
 Before this goes to `main`:
 
 - [ ] Capture the three outstanding shots and re-run the derive script.
+- [ ] Update every `<img>` `width`/`height` to the values the script prints.
 - [ ] Replace the reserved-slot blocks on `geomancer.html` and the devlog
       entry with real `<figure>` elements.
 - [ ] Set the entry date in `devlog/geomancer-devlog-1.html`.

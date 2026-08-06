@@ -66,6 +66,11 @@ DERIVATIVES: dict[str, str] = {
 # Source for the Open Graph card.
 OG_SOURCE = "Devlog1_B_Island_Hero.png"
 
+# Filled in as images are written, and reported at the end so the width and
+# height attributes in the pages can be kept truthful. Cropping editor chrome
+# changes an image's height, so these move when a shot is re-captured.
+DIMENSIONS: dict[str, tuple[int, int]] = {}
+
 # Internal review evidence and raw variants. These must never reach the site.
 # Guarded here as well as by convention, because a mistake is public.
 EXCLUDED_SUBSTRINGS = ("Evidence_Comparison", "_alt_", "_Raw")
@@ -145,6 +150,7 @@ def derive_one(src: Path, stem: str, check: bool) -> str:
     jpeg = OUT_DIR / f"{stem}.jpg"
     resized.save(webp, "WEBP", quality=WEBP_QUALITY, method=6)
     resized.save(jpeg, "JPEG", quality=JPEG_QUALITY, optimize=True, progressive=True)
+    DIMENSIONS[stem] = (WIDTH, height)
     return (
         f"{WIDTH}x{height}{note}  "
         f"webp {webp.stat().st_size / 1024:.0f} KB  "
@@ -223,6 +229,12 @@ def main() -> int:
         print(f"\n  OG CARD   {OG_SOURCE}  ->  {derive_og(og_src, args.check)}")
     else:
         print(f"\n  OG CARD   PENDING - {OG_SOURCE} missing")
+
+    if DIMENSIONS and not args.check:
+        print("\nSet these on the matching <img> tags so the browser reserves the")
+        print("right space and the page does not jump as images load:")
+        for stem, (w, h) in DIMENSIONS.items():
+            print(f'  {stem:34} width="{w}" height="{h}"')
 
     print(f"\n{written} derived, {len(pending)} pending.")
     if pending:
