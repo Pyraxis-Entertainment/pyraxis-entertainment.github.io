@@ -62,8 +62,34 @@ suite. See "What never goes on this site" at the end of this file.
 One script, `assets/compare.js` — about sixty lines of first-party vanilla
 JavaScript that turns the before/after block into a draggable comparison.
 No library, no CDN, nothing to install, and the page is complete without
-it. Nothing is vendored yet; when something is, it gets a row here with its
-version and licence.
+it.
+
+### Vendored assets
+
+Anything copied into this repository from elsewhere gets a row here with its
+licence, as Rule 2 requires. **The site makes no request to any host it does
+not own.**
+
+| Asset | Files | Licence | Source |
+|---|---|---|---|
+| DM Sans | `assets/fonts/dmsans-{normal,italic}-{latin,latin-ext}.woff2` | SIL Open Font Licence 1.1 | Google Fonts |
+| Michroma | `assets/fonts/michroma-normal-{latin,latin-ext}.woff2` | SIL Open Font Licence 1.1 | Google Fonts |
+
+Six files, 145 KB. DM Sans is a **variable** font, so one file per style
+covers the whole 300–500 weight range. The `latin` / `latin-ext` split and
+its `unicode-range` values are Google's own, kept so a browser downloads only
+the subset a page needs. Declared with `@font-face` at the top of
+`assets/site.css`, `font-display: swap`.
+
+**Why self-hosted rather than linked.** Rule 2 bans CDN dependencies, and two
+render-blocking requests per page is a real cost. But the deciding argument
+was neither: this site has no privacy notice because it collects nothing, and
+that claim was slightly untrue while a Google Fonts stylesheet sent every
+visitor's IP to Google on page load. Self-hosting does not reduce a risk so
+much as make a statement we already make completely true.
+
+**If you add or update a font,** add its row above, keep the licence, and
+re-check that no page requests an external host.
 
 ## Layout
 
@@ -81,6 +107,7 @@ sitemap.xml                       Hand-written, one line per page
 robots.txt                        Allows everything, points at the sitemap
 assets/site.css                   All site styles
 assets/compare.js                 Before/after slider (the only script)
+assets/fonts/                     DM Sans and Michroma, vendored (see above)
 assets/shots/                     Web images (WebP + JPEG), generated
 assets/og-image.jpg               Social preview card, generated
 tools/derive-shots.py             Image derivation (see below)
@@ -406,9 +433,9 @@ Before this goes to `main`:
 - [ ] Remove the `.pending` banner from `devlog/geomancer-devlog-1.html`.
 - [ ] Re-verify the landscape carving section of `geomancer/docs/water/`
       against the shipped build, then remove that page's `.pending` banner.
-- [ ] Rule the engine-version support commitment, then remove the two
-      `.callout--warn` placeholders and the `.pending` banners from
-      `geomancer/docs/` and `geomancer/changelog/`.
+- [ ] Remove the `.pending` banners from `geomancer/docs/` and
+      `geomancer/changelog/` once their remaining bullets are closed. The
+      engine-version support commitment is ruled and both pages now state it.
 - [ ] Confirm the support sentence is identical on `contact/index.html`,
       `geomancer/docs/index.html`, the Fab listing and the Discord copy.
       One sentence, four surfaces — see "The support sentence" above.

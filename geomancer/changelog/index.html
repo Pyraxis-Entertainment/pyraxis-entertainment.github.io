@@ -20,9 +20,6 @@
     <link rel="icon" type="image/png" sizes="64x64" href="../../favicon-64.png">
     <link rel="icon" type="image/png" sizes="128x128" href="../../favicon-128.png">
     <link rel="apple-touch-icon" href="../../apple-touch-icon.png">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Michroma&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../../assets/site.css">
 </head>
 <body>
@@ -53,7 +50,6 @@
                 <div class="pending" role="note">
                     <p class="pending-label">Not published — this page states a commitment that has not been ruled</p>
                     <ul>
-                        <li>The engine-version support paragraph under <em>Engine version support</em> is a draft commitment and has not been ruled.</li>
                         <li>No release has happened, so the history is empty by definition. That is honest, but check it still reads well the day before launch.</li>
                     </ul>
                     <p class="pending-note">Remove this block once the policy is ruled and 1.0 is listed.</p>
@@ -99,15 +95,9 @@
 
                         <p>Geomancer is built and tested against <strong>Unreal Engine 5.8</strong>.</p>
 
-                        <!-- NOT RULED. The paragraph below is the commitment. Three decisions sit
-                             behind it: how quickly a new engine version is supported, how long an
-                             old one keeps getting builds, and whether either is stated as a promise
-                             or described as a practice. Enumerated in the .pending banner at the
-                             top; the two go together.
-                             A previous draft also claimed older builds "stay available for as long
-                             as Fab allows them to be listed" - removed, because nothing on record
-                             establishes what Fab does with back-catalogue registrations. -->
-                        <p>When Epic releases a new engine version, Geomancer is rebuilt, re-tested and re-registered against it, and that update appears in the history below.</p>
+                        <p>Geomancer supports the current Unreal Engine release and the one immediately before it. When Epic ships a new version, Geomancer is rebuilt and re-registered against it — and the version that falls out of that window stops receiving fixes, though builds already published stay available to anyone who owns them.</p>
+
+                        <p>Every release is recorded below, so the record is checkable rather than merely promised.</p>
 
                         <h2 id="doc-versions">Documentation versions</h2>
 
