@@ -32,12 +32,17 @@ and the domain is already committed. Keep it there.
   fails *silently* years later. If a library earns its place, **vendor it**
   — copy the file into `assets/`, record its version and licence here, done.
 - **Build steps and static site generators: not banned, triggered.** At
-  five pages, duplicating the header and footer is cheaper than a
+  this size, duplicating the header and footer is cheaper than a
   toolchain. That flips at roughly **ten pages or five devlog entries**,
   whichever lands first — revisit then, not before. If it is ever
   revisited, prefer a single-binary generator (Hugo) over an
   npm-dependency one: the failure being avoided is `npm install` not
   working in 2031.
+- **The trigger counts pages you *maintain*, not files you have.** Archived
+  documentation versions under `geomancer/docs/<version>/` are frozen on
+  the day they are cut and never edited again, so they cost nothing to
+  keep and must not be counted. Without this line the trigger fires on the
+  first release, on pages nobody will ever open in an editor.
 - No paid fonts, no tracking scripts, no third-party embeds that phone
   home without a stated reason.
 
@@ -58,23 +63,31 @@ version and licence.
 ## Layout
 
 ```
-index.html                     Studio landing page
-geomancer/index.html           Geomancer — pitch, features, gallery
-devlog/index.html              Devlog venue — entry list, newest first
-devlog/geomancer-devlog-1.html Devlog entry
-contact/index.html             Contact — routed by intent
-assets/site.css                All site styles
-assets/compare.js              Before/after slider (the only script)
-assets/shots/                  Web images (WebP + JPEG), generated
-assets/og-image.jpg            Social preview card, generated
-tools/derive-shots.py          Image derivation (see below)
-CNAME .nojekyll                Domain and Pages configuration — leave alone
+index.html                        Studio landing page
+geomancer/index.html              Geomancer — pitch, features, gallery
+geomancer/docs/index.html         Documentation — requirements, help, bug template
+geomancer/docs/water/index.html   The Water module guide
+geomancer/changelog/index.html    Releases and engine-version support
+devlog/index.html                 Devlog venue — entry list, newest first
+devlog/geomancer-devlog-1.html    Devlog entry
+contact/index.html                Contact — routed by intent
+assets/site.css                   All site styles
+assets/compare.js                 Before/after slider (the only script)
+assets/shots/                     Web images (WebP + JPEG), generated
+assets/og-image.jpg               Social preview card, generated
+tools/derive-shots.py             Image derivation (see below)
+CNAME .nojekyll                   Domain and Pages configuration — leave alone
 ```
 
 The header and footer are duplicated in each page rather than shared by a
 template. That is the accepted trade for having no build step. **If you
-change one, change all five** — and note that this duplication is exactly
-what the ten-page trigger in Rule 2 is watching.
+change one, change them all** — and note that this duplication is exactly
+what the trigger in Rule 2 is watching.
+
+On documentation pages the primary nav marks Geomancer with
+`aria-current="true"`, not `"page"`. A docs page is *inside* the Geomancer
+section but is not the Geomancer page, and `"page"` would be a false claim
+to a screen reader.
 
 **Each product gets a directory**, so `/geomancer/` can grow a changelog,
 docs or a press kit later without moving anything. Internal links point at
@@ -157,6 +170,65 @@ reports what was true that day. An entry does not get edited later because
 the numbers moved — that is the point of the date. Write the entry, date it,
 leave it alone.
 
+## Adding or updating documentation
+
+Documentation lives under the product directory, so each product owns its
+own docs and a second product needs no restructure.
+
+```
+geomancer/docs/            the current release's documentation
+geomancer/docs/water/      one page per module
+geomancer/changelog/       releases and engine-version support
+```
+
+**The changelog sits beside `docs/`, not inside it.** It is cumulative and
+always current, so it must not be caught up in a version snapshot — a
+frozen 1.0 changelog would be nonsense.
+
+### The version scheme
+
+`geomancer/docs/` **always describes the current release.** That address
+never moves, which is the whole point of it: it is the URL printed on the
+store listing, inside the plugin, and in Discord, and it stays correct
+without any of those being reprinted.
+
+When a new version ships:
+
+1. Copy the whole of `geomancer/docs/` to `geomancer/docs/<outgoing
+   version>/` — for example `geomancer/docs/1.0/`.
+2. In the copy, add the `.doc-archived` banner to each page naming the
+   version it documents and linking to the current one, and add
+   `<meta name="robots" content="noindex">` to each `<head>`.
+3. Update `geomancer/docs/` in place for the new release, and bump the
+   `.doc-version` stamp on every page.
+4. Add the release to `geomancer/changelog/`.
+
+**An archived version is never edited again.** Same convention as a devlog
+entry: it is a dated record of what was true for that release, and it stays
+correct precisely because nobody goes back and touches it. Each page states
+which release it describes and when it was last checked.
+
+The `noindex` in step 2 is deliberate. Archived pages are near-identical to
+the current ones, and left indexable they compete with them — sending
+people searching for help to documentation for a version they are not
+running. Readers reach archives through the version links, not through
+Google.
+
+### The support sentence
+
+One sentence describes how support works, and it appears on four surfaces:
+`contact/index.html`, `geomancer/docs/index.html`, the Fab listing, and the
+Discord `#geomancer` topic and pin.
+
+> I check the inbox every weekday evening, so you will have an answer within
+> one working day.
+
+**If it changes, it changes in all four places in the same sitting.** Two
+different published response windows is worse than having none, because
+each one makes the other look careless. The wording is deliberate: naming
+*when the inbox is looked at* is a routine that can be kept indefinitely,
+where a bare window is a promise that fails the first busy week.
+
 ## Refreshing the shots
 
 Web images are generated from the full-size captures; the captures
@@ -193,9 +265,13 @@ change, because they already point at stable generated names.
 | `Devlog1_A_Before_Template.png` | `geomancer-template-before` | **not captured yet** |
 | `Devlog1_A_After_Template.png` | `geomancer-template-after` | **not captured yet** |
 | `Devlog1_F_Basin_Wetland.png` | `geomancer-basin-wetland` | **not captured yet** |
+| `Docs_Water_Panel.png` | `geomancer-docs-panel` | **not captured yet** |
+| `Docs_Water_Generated.png` | `geomancer-docs-generated` | **not captured yet** |
+| `Docs_Water_CarveGuard.png` | `geomancer-docs-carveguard` | **not captured yet** |
 
-Capture the three outstanding shots to exactly those filenames and the
-script picks them up with no further changes.
+Capture the outstanding shots to exactly those filenames and the script
+picks them up with no further changes. The last three are documentation
+captures and fill the reserved frames in `geomancer/docs/water/`.
 
 **One thing the script cannot do for you.** Some captures have a strip of
 editor UI along the top or bottom edge; the script detects and crops it,
@@ -214,7 +290,7 @@ are fine to show anyone — they are the point of `.frame-pending`.)
 
 Before this goes to `main`:
 
-- [ ] Capture the three outstanding shots and re-run the derive script.
+- [ ] Capture the outstanding shots and re-run the derive script.
 - [ ] Update every `<img>` `width`/`height` to the values the script prints.
 - [ ] Replace each `.frame-pending` on `geomancer/index.html` and the devlog
       entry with a real `<picture>`. Each reserved slot carries the exact
@@ -225,6 +301,14 @@ Before this goes to `main`:
 - [ ] Remove the `.pending` banner from `geomancer/index.html`.
 - [ ] Remove the `.pending` banner from `devlog/index.html`.
 - [ ] Remove the `.pending` banner from `devlog/geomancer-devlog-1.html`.
+- [ ] Re-verify the landscape carving section of `geomancer/docs/water/`
+      against the shipped build, then remove that page's `.pending` banner.
+- [ ] Rule the engine-version support commitment, then remove the two
+      `.callout--warn` placeholders and the `.pending` banners from
+      `geomancer/docs/` and `geomancer/changelog/`.
+- [ ] Confirm the support sentence is identical on `contact/index.html`,
+      `geomancer/docs/index.html`, the Fab listing and the Discord copy.
+      One sentence, four surfaces — see "The support sentence" below.
 - [ ] Search the repository for `PENDING` — it should return nothing.
 - [ ] Check every link resolves.
 - [ ] Confirm the devlog strip on `geomancer/index.html` matches

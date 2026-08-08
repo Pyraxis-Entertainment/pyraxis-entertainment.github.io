@@ -61,6 +61,11 @@ DERIVATIVES: dict[str, str] = {
     "Devlog1_A_Before_Template.png": "geomancer-template-before",
     "Devlog1_A_After_Template.png":  "geomancer-template-after",
     "Devlog1_F_Basin_Wetland.png":   "geomancer-basin-wetland",
+    # Documentation captures. Same capture session, same mechanism — these
+    # fill the three reserved frames in /geomancer/docs/water/.
+    "Docs_Water_Panel.png":          "geomancer-docs-panel",
+    "Docs_Water_Generated.png":      "geomancer-docs-generated",
+    "Docs_Water_CarveGuard.png":     "geomancer-docs-carveguard",
 }
 
 # Source for the Open Graph card.

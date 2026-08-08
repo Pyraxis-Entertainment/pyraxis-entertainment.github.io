@@ -972,3 +972,363 @@ figcaption {
         transition-duration: 0.01ms !important;
     }
 }
+
+/* --------------------------------------------------------------------------
+   Documentation
+
+   Used only by /geomancer/docs/ and /geomancer/changelog/. Docs are reference
+   material rather than pitch, so they need three things the rest of the site
+   does not: a contents rail, real tables, and inline code. Everything below
+   is built from the existing tokens — no new colours, no new fonts.
+
+   The docs measure is wider than --measure. Prose wants 68ch; a settings
+   table with a Default column does not fit in it, and wrapping every cell to
+   two lines is worse than a slightly wider column.
+   -------------------------------------------------------------------------- */
+
+/* Breadcrumb — docs sit two levels down, so the way back needs saying. */
+.breadcrumb {
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 1.25rem;
+}
+
+.breadcrumb a {
+    color: var(--text-muted);
+    text-decoration: none;
+    border-bottom: 1px solid var(--rule);
+}
+
+.breadcrumb a:hover {
+    color: var(--warm-gold);
+    border-bottom-color: var(--rule-strong);
+}
+
+.breadcrumb span {
+    margin-inline: 0.5rem;
+    color: var(--rule-strong);
+}
+
+/* Section switcher across the docs set. */
+.doc-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-block: 2rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--rule-faint);
+    list-style: none;
+}
+
+.doc-nav a {
+    display: inline-block;
+    padding: 0.45rem 0.95rem;
+    border-radius: 999px;
+    border: 1px solid var(--rule-faint);
+    background: var(--charcoal);
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.88rem;
+    transition: border-color 0.3s ease, color 0.3s ease;
+}
+
+.doc-nav a:hover {
+    border-color: var(--rule-strong);
+    color: var(--warm-gold);
+}
+
+.doc-nav a[aria-current="page"] {
+    border-color: var(--rule-strong);
+    color: var(--warm-gold);
+}
+
+/* The version stamp. Same convention as a devlog entry: a docs page states
+   which release it describes and when it was checked, so an archived copy
+   stays correct instead of going quietly wrong. */
+.doc-version {
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 0.75rem;
+}
+
+/* Shown only on archived versions under /docs/<n>/. */
+.doc-archived {
+    border: 1px solid var(--rule-strong);
+    border-radius: 10px;
+    background: rgba(201, 150, 60, 0.06);
+    padding: 1rem 1.25rem;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-block: 1.5rem;
+}
+
+.doc-archived strong {
+    color: var(--warm-gold);
+}
+
+/* Contents rail beside the body on wide screens, above it on narrow. */
+.doc-layout {
+    display: grid;
+    gap: 2.5rem;
+    grid-template-columns: 1fr;
+    align-items: start;
+}
+
+@media (min-width: 940px) {
+    .doc-layout {
+        grid-template-columns: 200px 1fr;
+        gap: 3.5rem;
+    }
+
+    .doc-toc {
+        position: sticky;
+        top: 2rem;
+    }
+}
+
+.doc-toc h2 {
+    font-size: 0.78rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--warm-gold);
+    margin: 0 0 1rem;
+}
+
+.doc-toc ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-left: 1px solid var(--rule-faint);
+}
+
+.doc-toc li {
+    margin: 0;
+}
+
+.doc-toc a {
+    display: block;
+    padding: 0.4rem 0 0.4rem 0.9rem;
+    margin-left: -1px;
+    border-left: 1px solid transparent;
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    line-height: 1.4;
+}
+
+.doc-toc a:hover {
+    color: var(--warm-gold);
+    border-left-color: var(--rule-strong);
+}
+
+.doc-body {
+    max-width: 78ch;
+    min-width: 0;
+}
+
+/* Anchored headings must not land under the sticky rail. */
+.doc-body h2,
+.doc-body h3 {
+    scroll-margin-top: 2rem;
+}
+
+.doc-body h2 {
+    padding-top: 1rem;
+    border-top: 1px solid var(--rule-faint);
+}
+
+.doc-body h2:first-of-type {
+    padding-top: 0;
+    border-top: 0;
+    margin-top: 1rem;
+}
+
+.doc-body ul,
+.doc-body ol {
+    margin: 0 0 1.5rem 1.1rem;
+}
+
+.doc-body li {
+    margin-bottom: 0.7rem;
+    padding-left: 0.3rem;
+    color: var(--text-muted);
+}
+
+.doc-body li::marker {
+    color: var(--warm-gold);
+}
+
+.doc-body p {
+    color: var(--text-muted);
+}
+
+.doc-body p strong,
+.doc-body li strong {
+    color: var(--warm-white);
+}
+
+/* Inline code. The .pending rule already styles code inside that banner;
+   this is the same treatment everywhere else. */
+.doc-body code,
+.callout code,
+td code,
+th code {
+    font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace;
+    font-size: 0.88em;
+    color: var(--warm-gold);
+    background: rgba(201, 150, 60, 0.07);
+    border-radius: 4px;
+    padding: 0.1em 0.4em;
+}
+
+/* Callouts. Two flavours only — a note and a warning — because a third
+   would need a third colour and the palette has no room for one. The label
+   carries the meaning, so nothing depends on colour alone. */
+.callout {
+    border: 1px solid var(--rule);
+    border-left-width: 3px;
+    border-radius: 8px;
+    background: var(--charcoal);
+    padding: 1.15rem 1.3rem;
+    margin-block: 1.75rem;
+}
+
+.callout p:last-child {
+    margin-bottom: 0;
+}
+
+.callout-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--warm-gold);
+    margin-bottom: 0.5rem;
+}
+
+.callout--warn {
+    border-left-color: var(--crimson);
+    background: rgba(139, 30, 47, 0.06);
+}
+
+.callout--warn .callout-label {
+    color: var(--warm-white);
+}
+
+.callout--warn .callout-label::before {
+    content: '\25C6';
+    color: var(--crimson);
+    margin-right: 0.5rem;
+}
+
+/* Tables. Horizontally scrollable on narrow screens rather than crushed —
+   the wrapper is focusable so the scroll is reachable from the keyboard. */
+.table-wrap {
+    overflow-x: auto;
+    margin-block: 1.75rem;
+    border: 1px solid var(--rule-faint);
+    border-radius: 10px;
+}
+
+.table-wrap:focus-visible {
+    outline: 2px solid var(--warm-gold);
+    outline-offset: 2px;
+}
+
+.table-wrap table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.92rem;
+    min-width: 34rem;
+}
+
+.table-wrap caption {
+    text-align: left;
+    padding: 1rem 1.15rem 0;
+    font-size: 0.78rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--warm-gold);
+}
+
+.table-wrap th {
+    text-align: left;
+    font-weight: 500;
+    color: var(--warm-white);
+    background: var(--charcoal);
+    padding: 0.85rem 1.15rem;
+    border-bottom: 1px solid var(--rule);
+    white-space: nowrap;
+}
+
+.table-wrap td {
+    padding: 0.85rem 1.15rem;
+    border-bottom: 1px solid var(--rule-faint);
+    color: var(--text-muted);
+    vertical-align: top;
+}
+
+.table-wrap tr:last-child td {
+    border-bottom: 0;
+}
+
+.table-wrap td:first-child {
+    color: var(--warm-white);
+    white-space: nowrap;
+}
+
+/* The bug-report template. Its canonical home is here — the Discord pin and
+   the store listing both link to this, rather than each keeping a copy. */
+.field-list {
+    list-style: none;
+    margin: 1.75rem 0;
+    padding: 1.4rem 1.5rem;
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    background: var(--charcoal);
+}
+
+.field-list li {
+    margin-bottom: 0.75rem;
+    padding-left: 0;
+    color: var(--text-muted);
+    font-size: 0.94rem;
+}
+
+.field-list li:last-child {
+    margin-bottom: 0;
+}
+
+.field-list strong {
+    color: var(--warm-white);
+    font-weight: 500;
+}
+
+/* Release history. Empty until 1.0 ships, and it says so rather than
+   pretending otherwise. */
+.release-list {
+    list-style: none;
+    margin: 2rem 0 0;
+    padding: 0;
+}
+
+.release-list > li {
+    border-left: 2px solid var(--rule);
+    padding: 0 0 2rem 1.5rem;
+    margin: 0;
+}
+
+.release-list > li:last-child {
+    padding-bottom: 0;
+}
+
+.release-version {
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--warm-gold);
+    margin-bottom: 0.5rem;
+}
