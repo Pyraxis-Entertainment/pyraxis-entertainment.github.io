@@ -53,9 +53,9 @@
                 <div class="pending" role="note">
                     <p class="pending-label">Not published — this page is waiting on decisions and a release</p>
                     <ul>
-                        <li>Geomancer 1.0 has not been released, so the install section describes a store flow that is not yet confirmed — Action Backlog #44 asks Fab whether the plugin-dependency rule covers engine-bundled plugins, and the answer changes this section.</li>
-                        <li>The response-window sentence uses the wording ruled on 7 August (<em>weekday evening</em>). Three other public surfaces still carry older versions of it — see the handover note.</li>
-                        <li>The engine-version support commitment is a placeholder awaiting Matt's ruling.</li>
+                        <li>Geomancer 1.0 has not been released, so the store-specific install steps cannot be written yet.</li>
+                        <li>The response-window sentence adapts the wording ruled on 7 August. The Discord <code>#geomancer</code> topic and pin may still carry an older version — see the handover note.</li>
+                        <li>The engine-version support paragraph under <em>Engine versions</em> is a draft and has not been ruled. It is the only sentence on this page that creates an ongoing obligation.</li>
                     </ul>
                     <p class="pending-note">Remove this block once 1.0 is released and the three items above are closed.</p>
                 </div>
@@ -89,11 +89,11 @@
                     </nav>
 
                     <div class="doc-body">
-                        <p class="doc-version">Geomancer 1.0 &middot; Verified 8 August 2026</p>
+                        <p class="doc-version">Geomancer 1.0 &middot; Checked 8 August 2026</p>
 
                         <p>Geomancer is a worldbuilding toolkit for Unreal Engine 5. It reads the landscape you already have and builds a world on top of it — starting with water that understands the terrain underneath.</p>
 
-                        <p>It is <strong>editor-only</strong>. Nothing Geomancer does compiles into a packaged build; what ships in your game is ordinary Unreal actors that you own outright and can edit like any others.</p>
+                        <p>It is <strong>editor-only</strong>. Nothing Geomancer does compiles into a packaged build; what ships in your game is ordinary Unreal actors you can edit like any others.</p>
 
                         <h2 id="requirements">Requirements</h2>
 
@@ -114,7 +114,7 @@
 
                         <h2 id="installing">Installing</h2>
 
-                        <p>Geomancer installs like any other Unreal plugin. Once it is enabled, restart the editor and the <code>Tools &rarr; Geomancer</code> menu appears.</p>
+                        <p>Geomancer installs like any other Unreal plugin. Once it is enabled, the <code>Tools &rarr; Geomancer</code> menu appears.</p>
 
                         <div class="callout" role="note">
                             <p class="callout-label">Section pending release</p>
@@ -140,7 +140,7 @@
 
                         <p><strong>Email is the support route.</strong> For anything you need a definite answer on — a bug, a licence or order question, anything with your details in it — write to <a href="mailto:contact@pyraxisentertainment.com">contact@pyraxisentertainment.com</a>.</p>
 
-                        <p>I check the inbox every weekday evening, so you will have an answer within one working day. It is the person who wrote the code answering.</p>
+                        <p>I check the inbox every weekday evening, so you'll have an answer within one working day. It is the person who wrote the code answering.</p>
 
                         <p>There is also a <a href="https://discord.gg/krRfyV6c7s" target="_blank" rel="noopener noreferrer">Discord</a>, which is the community rather than the support desk. Short questions get seen there and it is a good place to follow the work — but for anything you need a reply you can count on, use the email.</p>
 
@@ -165,11 +165,10 @@
 
                         <p>Unreal ships new engine versions regularly, and a plugin has to be rebuilt and re-tested against each one. Fab will not let a buyer add a plugin to a project it is not registered for, so this is not optional housekeeping — an out-of-date plugin is an unusable one.</p>
 
-                        <div class="callout callout--warn" role="note">
-                            <p class="callout-label">Placeholder — needs Matt's ruling before publication</p>
-                            <p>The commitment below is a draft. It is the one sentence on this page that creates an ongoing obligation, so it should be a deliberate promise rather than an inherited default.</p>
-                        </div>
-
+                        <!-- NOT RULED. The paragraph below is a draft commitment, and the only
+                             sentence on this page that creates an ongoing obligation. It is
+                             enumerated in the .pending banner at the top; the two go together.
+                             Options are set out in FAB-LISTING-WATER.md internal note 8. -->
                         <p>Geomancer is built and tested against <strong>Unreal Engine 5.8</strong>. When Epic releases a new engine version, Geomancer is rebuilt, re-tested and re-registered against it, and the release is listed on the <a href="../changelog/">releases page</a>.</p>
 
                         <p>Every release is recorded there, so you can see the update history before you buy rather than taking it on trust.</p>

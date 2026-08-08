@@ -194,8 +194,10 @@ without any of those being reprinted.
 
 When a new version ships:
 
-1. Copy the whole of `geomancer/docs/` to `geomancer/docs/<outgoing
-   version>/` — for example `geomancer/docs/1.0/`.
+1. Copy `geomancer/docs/` to `geomancer/docs/<outgoing version>/` — for
+   example `geomancer/docs/1.0/`. **Copy the current pages only: `index.html`
+   and the module directories.** Do not copy previous version directories into
+   the new one, or each release nests the whole archive history inside itself.
 2. In the copy, add the `.doc-archived` banner to each page naming the
    version it documents and linking to the current one, and add
    `<meta name="robots" content="noindex">` to each `<head>`.
@@ -207,6 +209,14 @@ When a new version ships:
 entry: it is a dated record of what was true for that release, and it stays
 correct precisely because nobody goes back and touches it. Each page states
 which release it describes and when it was last checked.
+
+**That rule beats "if you change one, change them all."** The two collide the
+first time the header or footer changes site-wide, because archived pages carry
+their own copies. Archives are deliberately left behind: an archived page is a
+snapshot, and a snapshot with next year's navigation in it is not one. The
+`.doc-archived` banner is what tells the reader they are looking at an old page,
+so a slightly old header is consistent rather than broken. **Only the current
+docs are in scope for a site-wide change.**
 
 The `noindex` in step 2 is deliberate. Archived pages are near-identical to
 the current ones, and left indexable they compete with them — sending
@@ -220,10 +230,14 @@ One sentence describes how support works, and it appears on four surfaces:
 `contact/index.html`, `geomancer/docs/index.html`, the Fab listing, and the
 Discord `#geomancer` topic and pin.
 
-> I check the inbox every weekday evening, so you will have an answer within
-> one working day.
+> I check the inbox every weekday evening, so you'll have an answer within one working day.
 
-**If it changes, it changes in all four places in the same sitting.** Two
+*Provenance: the version ruled on 7 August reads "I check **it** every weekday
+evening…" in Discord's `#welcome`, where the preceding sentence supplies the
+antecedent. Everywhere else "it" has nothing to refer to, so the noun is stated.
+That is an adaptation, not a re-ruling — flagged rather than assumed.*
+
+**If it changes, it changes in all four places in the same sitting** — and the string must be identical, not merely equivalent. Two
 different published response windows is worse than having none, because
 each one makes the other look careless. The wording is deliberate: naming
 *when the inbox is looked at* is a routine that can be kept indefinitely,
@@ -308,7 +322,7 @@ Before this goes to `main`:
       `geomancer/docs/` and `geomancer/changelog/`.
 - [ ] Confirm the support sentence is identical on `contact/index.html`,
       `geomancer/docs/index.html`, the Fab listing and the Discord copy.
-      One sentence, four surfaces — see "The support sentence" below.
+      One sentence, four surfaces — see "The support sentence" above.
 - [ ] Search the repository for `PENDING` — it should return nothing.
 - [ ] Check every link resolves.
 - [ ] Confirm the devlog strip on `geomancer/index.html` matches
