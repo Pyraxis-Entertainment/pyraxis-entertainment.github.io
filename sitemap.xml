@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Hand-written, and correct at this size. Eight pages, one line each.
+  See README.md, "Maintaining the sitemap" — a new page is added here in the
+  same sitting it is created, or it does not get found.
+
+  No <lastmod>, <changefreq> or <priority> on purpose. Search engines ignore
+  the last two, and a hand-kept lastmod goes stale the first time someone
+  edits a page and forgets this file — a date that is wrong is worse than one
+  that is absent, because it is trusted. If a build step ever arrives and can
+  stamp them accurately, that is the moment to add lastmod, not before.
+
+  Not listed, deliberately: 404.html, which is an error page and must never
+  be offered as a destination.
+-->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+    <!-- Studio -->
+    <url><loc>https://pyraxisentertainment.com/</loc></url>
+
+    <!-- Geomancer -->
+    <url><loc>https://pyraxisentertainment.com/geomancer/</loc></url>
+    <url><loc>https://pyraxisentertainment.com/geomancer/docs/</loc></url>
+    <url><loc>https://pyraxisentertainment.com/geomancer/docs/water/</loc></url>
+    <url><loc>https://pyraxisentertainment.com/geomancer/changelog/</loc></url>
+
+    <!-- Devlog -->
+    <url><loc>https://pyraxisentertainment.com/devlog/</loc></url>
+    <url><loc>https://pyraxisentertainment.com/devlog/geomancer-devlog-1.html</loc></url>
+
+    <!-- Studio -->
+    <url><loc>https://pyraxisentertainment.com/contact/</loc></url>
+
+</urlset>

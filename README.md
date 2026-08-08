@@ -71,6 +71,9 @@ geomancer/changelog/index.html    Releases and engine-version support
 devlog/index.html                 Devlog venue — entry list, newest first
 devlog/geomancer-devlog-1.html    Devlog entry
 contact/index.html                Contact — routed by intent
+404.html                          Not found — root-absolute paths only, see below
+sitemap.xml                       Hand-written, one line per page
+robots.txt                        Allows everything, points at the sitemap
 assets/site.css                   All site styles
 assets/compare.js                 Before/after slider (the only script)
 assets/shots/                     Web images (WebP + JPEG), generated
@@ -144,6 +147,53 @@ slightly off that once editor chrome is cropped, so expect a percent or two
 of shift when an image drops in — not the zero it would be if the exact
 dimensions were known in advance.
 
+## Maintaining the sitemap
+
+`sitemap.xml` is hand-written, one `<url>` line per page. At eight pages that
+is cheaper and more reliable than anything that would generate it, and it is
+the same trade as the duplicated header and footer.
+
+**A new page is added to `sitemap.xml` in the same sitting it is created.**
+There is no build step to catch the omission and nothing will fail loudly —
+the page simply never gets found, which is a bug you discover months later
+via an empty analytics row you are not collecting either.
+
+Three things deliberately not in that file:
+
+- **`lastmod`, `changefreq`, `priority`.** The last two are ignored by search
+  engines. A hand-kept `lastmod` goes stale the first time somebody edits a
+  page and forgets, and a date that is wrong is worse than one that is absent
+  because it is believed. If a generator ever arrives and can stamp these
+  accurately, that is when they go in.
+- **`404.html`.** An error page must never be offered as a destination.
+- **Archived documentation** under `geomancer/docs/<version>/`. Those pages
+  carry `noindex` and are meant to stay out of results entirely — listing
+  them in a sitemap would say the opposite.
+
+### Why there is no `Disallow` for archived docs
+
+The obvious-looking belt-and-braces — `noindex` on the page *and* a `Disallow`
+line in `robots.txt` — does not work, and is worth understanding before
+someone adds it. `Disallow` stops the page being fetched, so the `noindex`
+inside it is never read; a disallowed page that is linked from anywhere can
+still appear in results as a bare URL. The two are alternatives. `noindex` is
+the right one here because it removes the page outright rather than merely
+declining to look at it. The version scheme's step 2 is the whole mechanism.
+
+## The 404 page
+
+`404.html` is served by GitHub Pages for any address that does not resolve,
+which means it can render at `/geomancer/docs/typo/` as easily as at
+`/nonsense`. **Every path in it is root-absolute (`/assets/site.css`, not
+`../assets/site.css`) and must stay that way** — a relative path resolves
+against the invented address, 404s in turn, and leaves the error page itself
+unstyled with every link broken. It also carries no canonical tag, for the
+same reason: the URL varies.
+
+It is the one page whose header and footer are *not* copied verbatim from a
+neighbour, because those copies use relative paths. When the header or footer
+changes site-wide, this page needs the same change made with absolute paths.
+
 ## Adding a devlog entry
 
 1. Copy `devlog/geomancer-devlog-1.html` to
@@ -160,8 +210,10 @@ dimensions were known in advance.
    filtering is done by hand, so a product entry is listed in two places.
    Carry the `data-product` attribute across; it is the tag a generator
    would filter on if one ever arrives.
+6. **Add the entry's URL to `sitemap.xml`.** See "Maintaining the sitemap"
+   above. Nothing fails if you forget — the entry is simply never found.
 
-That is three files per entry. It is fine at this size and it is precisely
+That is four files per entry. It is fine at this size and it is precisely
 the cost Rule 2's trigger exists to catch — when it stops being fine, that
 is the signal, not a reason to improvise a build step early.
 

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Geomancer — Pyraxis Entertainment</title>
-    <meta name="description" content="Geomancer is a worldbuilding toolkit for Unreal Engine 5. Give it any terrain, and it gives you back a world that looks real — starting with water that understands the landscape underneath it.">
+    <meta name="description" content="A worldbuilding toolkit for Unreal Engine 5. Give it any terrain and it returns oceans, lakes and rivers placed from the landscape's own shape — no splines to draw.">
     <link rel="canonical" href="https://pyraxisentertainment.com/geomancer/">
     <meta property="og:title" content="Geomancer — a worldbuilding toolkit for Unreal Engine 5">
     <meta property="og:description" content="Give it any terrain, and it gives you back a world that looks real. Oceans, lakes and rivers placed from the landscape's own shape.">
@@ -24,6 +24,41 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Michroma&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../assets/site.css">
+
+    <!-- Structured data. Must not assert anything this page does not already
+         say out loud — see index.html for the full note.
+
+         Two deliberate omissions:
+
+         "offers" — there is no price, and there is no Fab listing. An offers
+         block is the property that turns this into a shopping result, so it
+         is exactly the one that must not be guessed at. It goes in when the
+         listing goes live, alongside the .cta-crimson button, and not before.
+
+         "operatingSystem" — this page does not state one, and neither does
+         the documentation: the requirements table names Unreal Engine 5.8, a
+         landscape and the Water plugin, and stops there. softwareRequirements
+         carries what the page does say. Add operatingSystem when the page
+         itself commits to one.
+
+         "aggregateRating" is not here and must never be added unless it
+         reflects real, verifiable reviews. -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "Geomancer",
+        "url": "https://pyraxisentertainment.com/geomancer/",
+        "applicationCategory": "DeveloperApplication",
+        "softwareRequirements": "Unreal Engine 5",
+        "description": "A worldbuilding toolkit for Unreal Engine 5, starting with water that understands the landscape underneath it. Oceans, lakes and rivers placed from the terrain's own shape.",
+        "publisher": {
+            "@type": "Organization",
+            "name": "Pyraxis Entertainment",
+            "url": "https://pyraxisentertainment.com/"
+        }
+    }
+    </script>
 </head>
 <body>
     <a class="skip-link" href="#main">Skip to content</a>

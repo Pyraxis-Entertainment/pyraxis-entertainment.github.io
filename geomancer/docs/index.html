@@ -24,6 +24,29 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Michroma&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../../assets/site.css">
+
+    <!-- Structured data. Must not assert anything this page does not already
+         say out loud — see index.html for the full note.
+
+         dateModified TRACKS THE VISIBLE "Checked" STAMP in .doc-version below,
+         and the two are updated together or not at all. A dateModified that
+         disagrees with the date printed on the page is the exact failure this
+         rule exists to prevent. When the stamp moves, move this with it. -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "TechArticle",
+        "headline": "Geomancer documentation",
+        "description": "Documentation for Geomancer, a worldbuilding toolkit for Unreal Engine 5. Requirements, installation, the module guides, how to get support and how to report a bug.",
+        "url": "https://pyraxisentertainment.com/geomancer/docs/",
+        "dateModified": "2026-08-08",
+        "publisher": {
+            "@type": "Organization",
+            "name": "Pyraxis Entertainment",
+            "url": "https://pyraxisentertainment.com/"
+        }
+    }
+    </script>
 </head>
 <body>
     <a class="skip-link" href="#main">Skip to content</a>

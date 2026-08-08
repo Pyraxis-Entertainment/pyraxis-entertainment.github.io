@@ -1,0 +1,27 @@
+# pyraxisentertainment.com
+#
+# Everything on this site is public and meant to be found. There is no
+# admin area, no login, and nothing generated — so there is nothing here
+# that wants hiding.
+
+User-agent: *
+Allow: /
+
+Sitemap: https://pyraxisentertainment.com/sitemap.xml
+
+# ---------------------------------------------------------------------------
+# Archived documentation — deliberately NOT disallowed here. Read this before
+# adding a Disallow line for /geomancer/docs/<version>/.
+#
+# Archived versions are meant to stay out of search results, and README's
+# version scheme handles that with <meta name="robots" content="noindex"> on
+# each archived page. Adding a Disallow rule on top of that does not reinforce
+# it — it breaks it. A disallowed URL is never fetched, so the noindex inside
+# it is never read, and a page that is linked from elsewhere can still surface
+# as a bare URL. The two mechanisms are alternatives, not belt and braces, and
+# noindex is the correct one here because it removes the page from results
+# outright rather than merely declining to crawl it.
+#
+# No archives exist yet, so there is nothing to exclude today. When the first
+# version is cut, the noindex in README's version scheme step 2 is the whole
+# job — leave this file alone.

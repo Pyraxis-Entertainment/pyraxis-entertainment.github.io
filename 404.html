@@ -3,42 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Devlog — Pyraxis Entertainment</title>
-    <meta name="description" content="Development notes from Pyraxis Entertainment — what shipped, what broke, and what we learned fixing it. Written while building Geomancer and our first game.">
-    <link rel="canonical" href="https://pyraxisentertainment.com/devlog/">
-    <meta property="og:title" content="Devlog — Pyraxis Entertainment">
-    <meta property="og:description" content="Development notes from the studio — what shipped, what broke, and what we learned fixing it.">
-    <meta property="og:url" content="https://pyraxisentertainment.com/devlog/">
-    <meta property="og:type" content="website">
-    <meta property="og:image" content="https://pyraxisentertainment.com/assets/og-image.jpg">
-    <meta property="og:image:alt" content="Aerial view of an island in Unreal Engine: ocean, lakes and winding rivers, shorelines shaded by shallow-water materials.">
-    <meta name="twitter:card" content="summary_large_image">
+    <title>Page not found — Pyraxis Entertainment</title>
+    <meta name="description" content="That page is not here. Links to the Geomancer documentation, the devlog and the studio.">
+    <meta name="robots" content="noindex">
     <meta name="theme-color" content="#12121A">
-    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
-    <link rel="icon" type="image/x-icon" href="../favicon.ico">
-    <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
-    <link rel="icon" type="image/png" sizes="64x64" href="../favicon-64.png">
-    <link rel="icon" type="image/png" sizes="128x128" href="../favicon-128.png">
-    <link rel="apple-touch-icon" href="../apple-touch-icon.png">
+
+    <!-- EVERY path on this page is root-absolute, and must stay that way.
+         GitHub Pages serves this file for any URL that does not resolve, so it
+         can render at /geomancer/docs/typo/ just as easily as at /nonsense.
+         A relative path resolves against that made-up address and 404s in turn,
+         which would leave the error page itself unstyled and its links broken.
+         There is no canonical tag for the same reason: the URL varies. -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="64x64" href="/favicon-64.png">
+    <link rel="icon" type="image/png" sizes="128x128" href="/favicon-128.png">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Michroma&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../assets/site.css">
+    <link rel="stylesheet" href="/assets/site.css">
 </head>
 <body>
     <a class="skip-link" href="#main">Skip to content</a>
 
     <header class="site-header">
         <div class="wrap">
-            <a class="brand" href="../">
+            <a class="brand" href="/">
                 <span class="brand-mark" aria-hidden="true">P</span>
                 <span class="brand-name">Pyraxis Entertainment</span>
             </a>
+            <!-- No aria-current on any item: a 404 is not one of these sections. -->
             <nav class="site-nav" aria-label="Primary">
-                <a href="../">Studio</a>
-                <a href="../geomancer/">Geomancer</a>
-                <a href="./" aria-current="page">Devlog</a>
-                <a href="../contact/">Contact</a>
+                <a href="/">Studio</a>
+                <a href="/geomancer/">Geomancer</a>
+                <a href="/devlog/">Devlog</a>
+                <a href="/contact/">Contact</a>
             </nav>
         </div>
     </header>
@@ -46,36 +47,44 @@
     <main id="main">
         <section class="hero">
             <div class="wrap">
-                <p class="eyebrow">Devlog</p>
-                <h1>The work, as it happens</h1>
+                <p class="eyebrow">Error 404</p>
+                <h1>That page is not here</h1>
                 <hr class="rule">
-                <p class="lede">Development notes from the studio — what shipped, what broke, and what we learned fixing it. Every entry is a dated log: it reports what was true on the day it was written, and it stays that way.</p>
+                <p class="lede">The address may be mistyped, or it may be something we moved. Either way, here is the way back.</p>
             </div>
         </section>
 
         <section class="section-flush">
             <div class="wrap">
-                <!-- REMOVE THIS BLOCK BEFORE THE SITE GOES LIVE.
-                     It is the guard against publishing an entry whose date and
-                     figures have not been set. See README.md, "Publishing". -->
-                <div class="pending" role="note">
-                    <p class="pending-label">Not published — this venue has no live entries yet</p>
-                    <ul>
-                        <li>Entry&nbsp;1's publication date is not set.</li>
-                        <li>Entry&nbsp;1 is still waiting on two captures.</li>
-                    </ul>
-                    <p class="pending-note">Remove this block, and the matching block on the entry page, when both are resolved.</p>
+                <!-- This eyebrow and h2 are structural, not decoration: without
+                     them the page runs h1 straight into the cards' h3 and skips
+                     a heading level. Same eyebrow + h2 + content pattern as
+                     every other section on the site. -->
+                <p class="eyebrow">Try these</p>
+                <h2>Where you might have been going</h2>
+
+                <div class="card-grid">
+                    <a class="card" href="/geomancer/docs/">
+                        <h3>Geomancer documentation</h3>
+                        <p>Requirements, installation, every setting and what each warning means. Free to read, no account needed.</p>
+                    </a>
+                    <a class="card" href="/geomancer/">
+                        <h3>Geomancer</h3>
+                        <p>A worldbuilding toolkit for Unreal Engine 5, and what it does in the build as it stands today.</p>
+                    </a>
+                    <a class="card" href="/devlog/">
+                        <h3>Devlog</h3>
+                        <p>Development notes from the studio — what shipped, what broke, and what we learned fixing it.</p>
+                    </a>
+                    <a class="card" href="/contact/">
+                        <h3>Contact</h3>
+                        <p>If you followed a link from us to get here, tell us — a broken link is worth knowing about.</p>
+                    </a>
                 </div>
 
-                <ul class="entry-list">
-                    <li data-product="geomancer">
-                        <a class="card" href="geomancer-devlog-1.html">
-                            <p class="entry-meta">Date pending &middot; Geomancer</p>
-                            <h2 class="entry-title">Geomancer Devlog #1 — the water knows where to go</h2>
-                            <p class="entry-summary">One click on a map I had never opened before, and the whole thing came back dressed: ocean, lakes, rivers. Then I flew further than I ever had, and two brand-new bugs fell out.</p>
-                        </a>
-                    </li>
-                </ul>
+                <div class="button-row">
+                    <a class="btn" href="/">Back to the studio <span class="btn-arrow" aria-hidden="true">&rarr;</span></a>
+                </div>
             </div>
         </section>
     </main>
@@ -116,7 +125,7 @@
                     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
                     <span>GitHub</span>
                 </a>
-                <a href="../contact/">
+                <a href="/contact/">
                     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z"/></svg>
                     <span>Contact</span>
                 </a>
