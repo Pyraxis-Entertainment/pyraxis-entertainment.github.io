@@ -9,6 +9,42 @@
      - never pure black, never pure white on a designed surface
      - Warm Gold is the workhorse accent; Crimson is the accent's accent
      - body copy is Warm White on Void (AAA); gold is for headings and rules
+
+   ---------------------------------------------------------------------------
+   WHY SO MANY "ORDER IS LOAD-BEARING" COMMENTS
+
+   Search this file for that phrase and you will find several. They are not
+   bad luck, and the next one is not either — it is the predictable cost of
+   how this stylesheet is built, so it is worth understanding before you
+   touch a rule pair.
+
+   Almost every selector here is a single class. That is good practice and it
+   makes specificity trivial to reason about. The consequence is that
+   everything TIES, so source order decides everything — and a tie is
+   completely invisible until a second rule targets the same element. Every
+   collision found so far was silent until something else changed:
+
+     - .site-nav a:hover vs [aria-current] — invisible until the section
+       state was added
+     - .doc-nav a:hover vs [aria-current="page"] — the two declared identical
+       values, so swapping them looked like nothing, until the current pill
+       gained a background
+     - .section-hero-flush vs .hero — lost on order and never applied once,
+       from the day it was written
+     - :hover vs :active on .btn, a.card, .follow a
+     - .card h2 vs .entry-title — this one is a specificity win rather than
+       an order one, and it silently repainted the devlog card titles
+
+   The mitigation at this size is the comments: state the tie where it sits,
+   say which rule has to come last, and say what breaks if it moves. That is
+   cheaper than restructuring and it survives someone reading only the part
+   of the file they are editing.
+
+   If it bites a sixth time, the structural fix is to group rules BY
+   COMPONENT rather than by type, so a component's base, hover, current and
+   active rules sit adjacent and their order is self-evident on sight. That
+   is a refactor of the whole file, not a patch — do it deliberately or not
+   at all.
    ========================================================================== */
 
 :root {
