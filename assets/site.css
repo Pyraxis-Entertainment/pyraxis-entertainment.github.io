@@ -33,7 +33,12 @@
     --text-muted: rgba(240, 237, 230, 0.78);
     --text-dim: rgba(240, 237, 230, 0.55);
 
-    --measure: 68ch;
+    /* Prose measure. `ch` is the width of "0", and DM Sans's "0" is 0.6875em
+       against an average text character of ~0.49em — so a ch value reads
+       about 1.4x larger than the character count it looks like. 54ch lands
+       near 75 characters, the top of the comfortable 60-75 range. It was
+       68ch, which measured ~100 characters on the lede. */
+    --measure: 54ch;
     --page: 1100px;
 }
 
@@ -381,8 +386,20 @@ section {
     margin: 0;
 }
 
+/* Asymmetric on purpose. With equal padding the first gap on every page
+   measured 146-152px content-to-content, while every other section break on
+   the same page is 112px — so the first break a visitor sees was 40px larger
+   than the page's own rhythm and read as a deleted element. .section-flush
+   only zeroes the following section's padding; the hero's own survived it. */
 .hero {
-    padding-block: clamp(3.5rem, 9vw, 6rem);
+    padding-top: clamp(3.5rem, 9vw, 6rem);
+    padding-bottom: clamp(2rem, 4vw, 3rem);
+}
+
+/* A hero rule separates an h1 from its own lede. At the global 2.5rem that
+   is 40px + rule + 40px — 80px between a title and its subtitle. */
+.hero .rule {
+    margin-block: 1.75rem;
 }
 
 .hero-mark {
@@ -440,11 +457,22 @@ section {
 /* ORDER IS LOAD-BEARING. :hover and :active are both (0,2,0), so :active
    only wins — and the button only presses back down under the cursor —
    because it comes second. Same trap as the nav rules above. */
+/* ORDER IS LOAD-BEARING. :hover and :active are both (0,2,0), so :active
+   only wins — and the button only presses back down under the cursor —
+   because it comes second. Same trap as the nav rules above.
+
+   The border goes to full Warm Gold on hover. It was --rule-strong, which
+   moved the border from 0.22 to 0.35 alpha: a change you had to be looking
+   for to notice on the site's only interactive control. */
 @media (hover: hover) {
     .btn:hover {
-        border-color: var(--rule-strong);
+        border-color: var(--warm-gold);
         transform: translateY(-1px);
         box-shadow: 0 4px 20px rgba(201, 150, 60, 0.08);
+    }
+
+    .btn:hover .btn-arrow {
+        transform: translateX(3px);
     }
 }
 
@@ -454,6 +482,7 @@ section {
 
 .btn-arrow {
     color: var(--warm-gold);
+    transition: transform 0.3s ease;
 }
 
 /* Crimson call-to-action.
@@ -488,6 +517,26 @@ section {
     border-radius: 12px;
     padding: 1.6rem;
     transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* The global h2/h3 top margin does not belong inside a card. On /contact/ it
+   measured 75px above a card title against 27px below it. */
+.card > :first-child {
+    margin-top: 0;
+}
+
+/* /contact/ carried two card-title systems at once: h2 titles in
+   .feature-list cards at 30.4px gold, and h3 titles in .card-grid cards at
+   18.4px warm white, on the same page. This brings the h2 into the same
+   weight class so the page reads as one system. */
+.card h2 {
+    font-size: 1.25rem;
+}
+
+/* 0.4rem from the global h3 is tight against the paragraph below it relative
+   to the card's own 25.6px padding. */
+.card h3 {
+    margin-bottom: 0.65rem;
 }
 
 a.card {
@@ -527,6 +576,13 @@ a.card:active {
     margin-bottom: 0;
     color: var(--text-muted);
     font-size: 0.95rem;
+}
+
+/* Where the card is a link, the <li> is the grid item and the <a> has to be
+   told to fill it — otherwise a shorter card in the row stops short of the
+   row's height and the hover target ends above the card's own bottom edge. */
+.feature-list > li > a.card {
+    height: 100%;
 }
 
 .split {
@@ -585,6 +641,16 @@ figcaption {
     margin: 0;
     display: flex;
     flex-direction: column;
+}
+
+/* The real captures are 1.92:1 and 1.79:1 while .frame-pending reserves
+   16:9, so captions started up to 19px apart and the row would have re-jigged
+   as each shot landed. Pinning the images to the frames' own ratio holds the
+   grid still through the capture session. Images only — the pending frames
+   already carry the ratio themselves. */
+.gallery figure img {
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
 }
 
 /* A comparison block is the point of the gallery, not one cell of it. */
@@ -890,6 +956,7 @@ figcaption {
     color: var(--text-muted);
     font-size: 0.95rem;
     margin-bottom: 0;
+    max-width: var(--measure);
 }
 
 .entry-header {
@@ -926,14 +993,25 @@ figcaption {
    Footer
    -------------------------------------------------------------------------- */
 
+/* Solid Charcoal over a --rule border. It was rgba(26,26,34,0.5) over Void
+   with a 0.1-alpha border, which is a 4-point luminance difference and a
+   line you cannot see — the footer did not read as a footer, it read as
+   nine pills floating at the end of the page. */
 .site-footer {
     position: relative;
     z-index: 1;
     flex-shrink: 0;
     margin-top: 4rem;
-    border-top: 1px solid var(--rule-faint);
-    background: rgba(26, 26, 34, 0.5);
+    border-top: 1px solid var(--rule);
+    background: var(--charcoal);
     padding-block: 3rem;
+}
+
+/* Contact is the one link a paying customer needs, and in the social row it
+   was ninth of nine identical pills. Promoted out of the row to the site's
+   own primary-action component. */
+.footer-contact {
+    margin-bottom: 1.75rem;
 }
 
 .footer-tagline {
@@ -950,12 +1028,17 @@ figcaption {
     margin-bottom: 2rem;
 }
 
+/* Void, not Charcoal. These pills were Charcoal on a half-alpha Charcoal
+   footer; now that the footer is solid Charcoal that would be pill-coloured
+   pills on a pill-coloured background, leaving only a 0.1-alpha border to
+   separate them. Inverting them against the raised footer keeps the
+   distinction the surface change would otherwise have eaten. */
 .follow a {
     display: inline-flex;
     align-items: center;
     gap: 0.55rem;
     padding: 0.55rem 0.9rem;
-    background: var(--charcoal);
+    background: var(--void);
     border: 1px solid var(--rule-faint);
     border-radius: 8px;
     color: var(--text-muted);
@@ -1028,6 +1111,23 @@ figcaption {
         width: 100%;
         margin-left: 0;
     }
+
+    /* At 390 the wordmark wraps to two lines, and 1.45 leading made the two
+       halves read as two separate things rather than one name. */
+    .wordmark {
+        line-height: 1.25;
+    }
+}
+
+/* The two hero buttons measured 153px and 185px, stacked and left-aligned —
+   two different widths in a column reads as untidy rather than deliberate.
+   Full width with the arrow pushed to the far edge gives them one shape and
+   puts the affordance where a thumb already is. */
+@media (max-width: 480px) {
+    .button-row .btn {
+        width: 100%;
+        justify-content: space-between;
+    }
 }
 
 /* --------------------------------------------------------------------------
@@ -1093,11 +1193,13 @@ figcaption {
 }
 
 /* Section switcher across the docs set. */
+/* margin-top is 0: the hero above already supplies the space, and its own
+   padding plus this margin was part of the 146px first gap on docs pages. */
 .doc-nav {
     display: flex;
     flex-wrap: wrap;
     gap: 0.6rem;
-    margin-block: 2rem;
+    margin-block: 0 2rem;
     padding-bottom: 2rem;
     border-bottom: 1px solid var(--rule-faint);
     list-style: none;
@@ -1117,11 +1219,11 @@ figcaption {
 
 /* ORDER IS LOAD-BEARING, same as the site nav: :hover and
    [aria-current="page"] are both (0,2,1) and only source order separates
-   them. They happen to declare identical values today, so nothing looks
-   wrong if they swap — which is exactly why this is worth writing down.
-   The moment the current pill is given its own background (it should be:
-   a hovered pill and the current pill are indistinguishable), order starts
-   to matter visibly. Keep the current-state rule last. */
+   them. This is no longer theoretical — the current pill now carries a
+   background the hover state does not, so swapping these two would make the
+   hovered pill impersonate the current one. Keep the current-state rule
+   last. Before the background existed, both rules declared identical values
+   and a hovered pill was indistinguishable from the current page. */
 @media (hover: hover) {
     .doc-nav a:hover {
         border-color: var(--rule-strong);
@@ -1132,6 +1234,7 @@ figcaption {
 .doc-nav a[aria-current="page"] {
     border-color: var(--rule-strong);
     color: var(--warm-gold);
+    background: rgba(201, 150, 60, 0.10);
 }
 
 /* The version stamp. Same convention as a devlog entry: a docs page states
@@ -1217,9 +1320,41 @@ figcaption {
     }
 }
 
+/* Below the two-column breakpoint the rail has no column to sit in, and as a
+   full-width list with a hairline left border it cost ~250px of vertical
+   furniture and read as a stray line. Reuse the .doc-nav pill pattern rather
+   than introduce a second layout for the same job. */
+@media (max-width: 939px) {
+    .doc-toc ol {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        border-left: 0;
+    }
+
+    .doc-toc a {
+        padding: 0.35rem 0.8rem;
+        margin-left: 0;          /* the rail's -1px hairline offset, undone */
+        border: 1px solid var(--rule-faint);
+        border-radius: 999px;
+        background: var(--charcoal);
+    }
+}
+
+/* The CONTAINER stays wide — 78ch exists so the settings tables fit, and
+   wrapping every cell to two lines is worse than a wider column. The prose
+   inside it is narrowed instead, below. Do not narrow this. */
 .doc-body {
     max-width: 78ch;
     min-width: 0;
+}
+
+/* Prose children only, so tables, figures and callouts keep the full width.
+   Measured before this: 796px at ~119 characters per line. */
+.doc-body > p,
+.doc-body > ul,
+.doc-body > ol {
+    max-width: 58ch;
 }
 
 /* Anchored headings must not land under the sticky rail. */
@@ -1233,10 +1368,38 @@ figcaption {
     border-top: 1px solid var(--rule-faint);
 }
 
+/* ORDER IS LOAD-BEARING for the two rules below — both (0,2,1), so the
+   :first-child override wins on position alone.
+
+   The first h2 has no hairline rule above it, which means it needs MORE
+   space than the ones that do, not less. It was 1rem against their 3rem. */
 .doc-body h2:first-of-type {
     padding-top: 0;
     border-top: 0;
-    margin-top: 1rem;
+    margin-top: 2.5rem;
+}
+
+/* Except where an h2 opens .doc-body outright, with nothing above it to be
+   separated from. No page does that today — /geomancer/changelog/ did until
+   it gained its .doc-version stamp — so this rule is what makes leading with
+   an h2 safe rather than something it fixes right now. */
+.doc-body > h2:first-child {
+    margin-top: 0;
+}
+
+/* Third-level headings in the docs were 18.4px/500/warm-white with no top
+   margin, against a <strong> at 16px/500/warm-white — on a long reference
+   page the third level of hierarchy had effectively vanished. Small-caps in
+   gold is the same treatment as .eyebrow and .callout-label, so it reads as
+   the existing family rather than a new idea.
+
+   SCOPED TO .doc-body deliberately: a global h3 change breaks .card h3. */
+.doc-body h3 {
+    margin-top: 2.25rem;
+    font-size: 1.05rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--warm-gold);
 }
 
 .doc-body ul,
@@ -1274,7 +1437,9 @@ th code {
     color: var(--warm-gold);
     background: rgba(201, 150, 60, 0.07);
     border-radius: 4px;
-    padding: 0.1em 0.4em;
+    /* 0.4em left ~6px of air before a following full stop, visible about a
+       dozen times across the docs. */
+    padding: 0.12em 0.3em;
 }
 
 /* Callouts. Two flavours only — a note and a warning — because a third
@@ -1339,7 +1504,9 @@ th code {
 
 .table-wrap caption {
     text-align: left;
-    padding: 1rem 1.15rem 0;
+    /* The 0 bottom put the caption flush against the header row — measured
+       0px between them. */
+    padding: 1rem 1.15rem 0.8rem;
     font-size: 0.78rem;
     letter-spacing: 0.16em;
     text-transform: uppercase;
@@ -1370,6 +1537,31 @@ th code {
 .table-wrap td:first-child {
     color: var(--warm-white);
     white-space: nowrap;
+}
+
+/* Below 720px the 34rem floor forces a horizontal scroll against a 342px
+   content width, and the Notes column sliced mid-word ("How...", "Coar...").
+   Nothing indicated it scrolled, so it read as broken rather than
+   scrollable — and an inset shadow cue does not work here because the th/td
+   backgrounds paint over it. Remove the need to scroll instead of
+   advertising it. Must stay below the base table rules: the overrides here
+   match their specificity and win on order. */
+@media (max-width: 720px) {
+    .table-wrap table {
+        min-width: 0;
+        font-size: 0.85rem;
+    }
+
+    .table-wrap th,
+    .table-wrap td,
+    .table-wrap td:first-child {
+        padding: 0.65rem 0.75rem;
+        white-space: normal;
+    }
+
+    .table-wrap caption {
+        padding-inline: 0.75rem;
+    }
 }
 
 /* The bug-report template. Its canonical home is here — the Discord pin and
@@ -1423,4 +1615,121 @@ th code {
     text-transform: uppercase;
     color: var(--warm-gold);
     margin-bottom: 0.5rem;
+}
+
+/* --------------------------------------------------------------------------
+   Print
+
+   People print and PDF reference documentation, and a dark-themed page
+   prints as either a solid block of ink or as pale grey on white. This is
+   the one place the "never pure black, never pure white" rule bends
+   legitimately: the rule protects screen surfaces from glare, and paper is
+   already white. Ink is set to near-black rather than #000 so it stays a
+   deliberate colour rather than a default.
+
+   Navigation, the footer and the contents rail are all routes, and a route
+   on paper is dead weight. External link targets are printed after the link
+   text, because a URL a reader cannot click is only useful if they can read
+   and type it.
+   -------------------------------------------------------------------------- */
+
+@media print {
+    /* The noise overlay and the gold glow are both decorative and both would
+       otherwise render as a grey wash across every page. */
+    body::before,
+    body::after {
+        display: none !important;
+    }
+
+    html, body {
+        background: #fff;
+        color: #1a1a1a;
+    }
+
+    body {
+        font-size: 11pt;
+        line-height: 1.45;
+    }
+
+    .site-header,
+    .site-footer,
+    .doc-toc,
+    .doc-nav,
+    .skip-link,
+    .compare-range,
+    .compare-divider,
+    .compare-hint,
+    .button-row {
+        display: none;
+    }
+
+    h1, h2, h3,
+    .eyebrow,
+    .callout-label,
+    .table-wrap caption,
+    .entry-title,
+    .release-version,
+    .doc-body h3 {
+        color: #6b4a12;
+    }
+
+    p, li, td, th,
+    .lede, .doc-body p, .doc-body li,
+    figcaption, .entry-summary, .doc-version, .verified-note {
+        color: #1a1a1a;
+    }
+
+    /* Full measure on paper — the column width was chosen for a screen the
+       reader can sit back from. */
+    .wrap { max-width: none; padding-inline: 0; }
+    .prose, .lede, .doc-body,
+    .doc-body > p, .doc-body > ul, .doc-body > ol { max-width: none; }
+    .doc-layout { display: block; }
+
+    section { padding-block: 1rem; }
+    .hero { padding-block: 0 1rem; }
+
+    /* Surfaces that were dark cards become outlined blocks. */
+    .card, .callout, .field-list, .frame-pending, .table-wrap {
+        background: transparent;
+        border: 1px solid #bbb;
+    }
+
+    .table-wrap { overflow-x: visible; }
+    .table-wrap table { min-width: 0; }
+    .table-wrap th { background: #f2f2f2; color: #1a1a1a; }
+    .table-wrap th, .table-wrap td { border-bottom: 1px solid #ddd; }
+
+    .doc-body code, .callout code, td code, th code, .pending code {
+        background: #f2f2f2;
+        color: #6b4a12;
+        border: 1px solid #e0e0e0;
+    }
+
+    /* The .pending banner must survive printing. If a draft page is printed
+       and circulated, the thing that says "not published" has to come with
+       it — that is the entire job of this banner. */
+    .pending {
+        background: transparent;
+        border: 2px dashed #8B1E2F;
+    }
+
+    .pending-label { color: #8B1E2F; }
+
+    /* Print the destination of external links only. Internal ones resolve to
+       paths a reader has no way to use, and mailto: already shows the
+       address in the link text on the contact page. */
+    a[href^="http"]::after {
+        content: " <" attr(href) ">";
+        font-size: 0.85em;
+        word-break: break-all;
+    }
+
+    a { text-decoration: underline; }
+
+    /* Do not split a heading from what it introduces, or a figure from its
+       caption. */
+    h1, h2, h3 { break-after: avoid; page-break-after: avoid; }
+    figure, .table-wrap, .callout { break-inside: avoid; page-break-inside: avoid; }
+    img { max-width: 100% !important; }
 }
