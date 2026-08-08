@@ -1081,9 +1081,15 @@ figcaption {
     }
 }
 
+/* The "/" between crumbs. This was --rule-strong, which is a BORDER tint
+   (rgba(201,150,60,0.35)) being used for text: 1.89:1 on Void, failing both
+   the 4.5:1 text floor and the 3:1 non-text floor. --text-dim is the lowest
+   step of the text ladder that clears AA, and the separators also carry
+   aria-hidden in the markup so a screen reader does not read "slash".
+   Border tints are for borders — they are not on the text ladder. */
 .breadcrumb span {
     margin-inline: 0.5rem;
-    color: var(--rule-strong);
+    color: var(--text-dim);
 }
 
 /* Section switcher across the docs set. */

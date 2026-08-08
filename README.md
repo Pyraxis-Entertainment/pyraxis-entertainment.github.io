@@ -33,16 +33,21 @@ and the domain is already committed. Keep it there.
   — copy the file into `assets/`, record its version and licence here, done.
 - **Build steps and static site generators: not banned, triggered.** At
   this size, duplicating the header and footer is cheaper than a
-  toolchain. That flips at roughly **ten pages or five devlog entries**,
-  whichever lands first — revisit then, not before. If it is ever
-  revisited, prefer a single-binary generator (Hugo) over an
-  npm-dependency one: the failure being avoided is `npm install` not
-  working in 2031.
-- **The trigger counts pages you *maintain*, not files you have.** Archived
-  documentation versions under `geomancer/docs/<version>/` are frozen on
-  the day they are cut and never edited again, so they cost nothing to
-  keep and must not be counted. Without this line the trigger fires on the
-  first release, on pages nobody will ever open in an editor.
+  toolchain. If it is ever revisited, prefer a single-binary generator
+  (Hugo) over an npm-dependency one: the failure being avoided is
+  `npm install` not working in 2031.
+- **The trigger is edit frequency, not page count.** An earlier version of
+  this rule fired at "roughly ten pages or five devlog entries". That
+  counted the wrong thing: page count is only a proxy for the real cost,
+  which is **how often the shared header and footer actually change**. Ten
+  copies nobody touches cost nothing to keep; three you edit weekly hurt.
+
+  **The trigger: the next two times you change the header or footer and
+  resent doing it N times over, adopt a generator.** Log the first
+  occurrence here when it happens, with the date and what changed — one
+  occurrence is an anecdote, two in a row is the signal.
+
+  *Occurrences logged so far: none.*
 - No paid fonts, no tracking scripts, no third-party embeds that phone
   home without a stated reason.
 
@@ -213,9 +218,12 @@ changes site-wide, this page needs the same change made with absolute paths.
 6. **Add the entry's URL to `sitemap.xml`.** See "Maintaining the sitemap"
    above. Nothing fails if you forget — the entry is simply never found.
 
-That is four files per entry. It is fine at this size and it is precisely
-the cost Rule 2's trigger exists to catch — when it stops being fine, that
-is the signal, not a reason to improvise a build step early.
+That is four files per entry. It is fine at this size, and it is a
+*different* cost from the one Rule 2's trigger watches: adding an entry is
+new work each time, where changing the header is the same edit repeated
+across every page. Repetition of the second kind is what earns a generator.
+If writing entries ever becomes the thing that hurts, that is worth saying
+out loud — but it is not the signal Rule 2 is listening for.
 
 **Entries are dated logs.** Each one says when its figures were checked and
 reports what was true that day. An entry does not get edited later because
@@ -388,6 +396,18 @@ ready" is the promise.
 Unreleased game titles and working names, revenue or pricing, release dates,
 internal technical detail, internal file or folder paths, contributor names
 without their consent, and AI-generated images presented as final art.
+
+### HTML comments ship
+
+A shipped HTML comment may reference files that ship in this repo
+(`README.md`, `tools/derive-shots.py`). It must not reference files that do
+not — those are internal documents and naming them is a disclosure.
+
+**Grep before committing: a filename in a comment that is not in this repo is
+the tell.** Two comments carrying an internal note's filename reached a public
+branch this way, and neither needed it — the `.pending` banner is what
+actually stops an unruled paragraph shipping, not a pointer to where the
+options were written down.
 
 ---
 
