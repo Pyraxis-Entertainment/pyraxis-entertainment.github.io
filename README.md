@@ -129,8 +129,19 @@ Colours are defined once as custom properties at the top of `assets/site.css`.
 - **Michroma** is for the wordmark only, uppercase, `0.14em` tracking.
   Everything else is **DM Sans**.
 - Body text is Warm White on Void. Gold is for headings and rules.
-- Every text colour in the stylesheet clears WCAG AA (4.5:1) on Void.
-  If you add one, check it.
+- **Check contrast by enumerating rendered pairs, not by checking the
+  palette.** Walk every element that owns visible text, composite the
+  background actually painted behind it through all its ancestors, and
+  compare that to the computed colour. Nothing below 4.5:1. The floor today
+  is `--text-dim` on Charcoal at **5.30:1**, over 89 pairs across nine pages.
+
+  Checking the named tokens instead is not a shortcut, it is a different and
+  weaker test, and it has already missed a real failure: the breadcrumb
+  separators were set in `--rule-strong` and sat at **1.89:1**, failing both
+  the 4.5:1 text floor and the 3:1 non-text floor, while a token-based pass
+  reported the site clean. `--rule-strong` is a border tint — it is not on
+  the text ladder, and a token used outside its purpose is exactly what pair
+  enumeration catches and token-checking cannot.
 - Every image needs real alt text describing the visual.
 - Keep the `prefers-reduced-motion` block working for any animation added.
 
@@ -244,6 +255,24 @@ geomancer/changelog/       releases and engine-version support
 **The changelog sits beside `docs/`, not inside it.** It is cumulative and
 always current, so it must not be caught up in a version snapshot — a
 frozen 1.0 changelog would be nonsense.
+
+### When a table gets a `<caption>`
+
+A table gets a caption **when it sits under a shared `h2` alongside other
+tables and has no heading of its own** — the caption is what tells them
+apart. A table that already owns a heading has its caption; adding one
+repeats the label.
+
+That is why the water page has four captions and six tables, and the split is
+deliberate rather than an oversight. `.doc-body h3` and `.table-wrap caption`
+are both gold small caps, so a caption directly under a heading of the same
+text renders as the same label printed twice.
+
+*Provenance: this was written down because an audit read the 4-of-6 split as
+an inconsistency and asked for the two missing captions. It was right when
+written — the redundancy only appeared once `.doc-body h3` became gold small
+caps in the same pass, which is what made a caption and a heading
+indistinguishable. A finding can go stale inside the work that acts on it.*
 
 ### The version scheme
 
@@ -387,6 +416,13 @@ Before this goes to `main`:
 - [ ] Check every link resolves.
 - [ ] Confirm the devlog strip on `geomancer/index.html` matches
       `devlog/index.html`.
+- [ ] **Settle the gallery layout on `geomancer/index.html` with the real
+      images in place.** `.gallery` lays out 2-up at desktop widths, and the
+      three figures leave the last one alone in its own row. Deliberately not
+      fixed against the placeholders: the final composition depends on images
+      that do not exist yet, at aspect ratios nobody knows, so solving it now
+      means solving it twice. Gallery images are pinned to the frames' 16:9
+      so the grid holds still until then. Decide it at the capture session.
 
 Nothing on the site carries a release date, and nothing should. "When it's
 ready" is the promise.

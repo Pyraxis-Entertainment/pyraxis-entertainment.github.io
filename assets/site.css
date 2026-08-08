@@ -527,10 +527,18 @@ section {
 
 /* /contact/ carried two card-title systems at once: h2 titles in
    .feature-list cards at 30.4px gold, and h3 titles in .card-grid cards at
-   18.4px warm white, on the same page. This brings the h2 into the same
-   weight class so the page reads as one system. */
+   18.4px warm white, on the same page. Both size and colour come into line,
+   because matching only the size left the same split in a quieter form.
+
+   The system underneath, so this is not arbitrary: a PLAIN card title is
+   warm white, whatever heading level it happens to be. .entry-title is gold
+   because those cards are links, and gold is the link colour — the gold
+   there is carrying meaning, not decoration. That is also why the docs
+   heading rules are untouched: .doc-body h3 is gold because it is a document
+   heading, not a card title. */
 .card h2 {
     font-size: 1.25rem;
+    color: var(--warm-white);
 }
 
 /* 0.4rem from the global h3 is tight against the paragraph below it relative
@@ -943,6 +951,18 @@ figcaption {
     margin-bottom: 0.5rem;
 }
 
+/* Gold, and the doubled selector is what keeps it that way: .card h2 sets
+   warm white at (0,1,1), which outranks a bare .entry-title at (0,1,0)
+   regardless of source order. Listing .card .entry-title raises this to
+   (0,2,0) so it wins.
+
+   It has to win. Plain card titles are warm white; these cards are LINKS,
+   and gold is the link colour — the gold is carrying meaning here rather
+   than decorating. See the note on .card h2.
+
+   The tag cannot be relied on either: .entry-title is an h2 on /devlog/ and
+   an h3 in the product page's devlog strip. */
+.card .entry-title,
 .entry-title {
     font-size: 1.25rem;
     color: var(--warm-gold);
@@ -1350,11 +1370,16 @@ figcaption {
 }
 
 /* Prose children only, so tables, figures and callouts keep the full width.
-   Measured before this: 796px at ~119 characters per line. */
+   Measured before this: 796px at ~119 characters per line.
+
+   One measure, not two. An earlier pass gave the docs their own 58ch on the
+   grounds that reference material can run wider — but it bought about five
+   characters of difference for the cost of a second magic number, and
+   --measure already lands at the ~75 that is the target. */
 .doc-body > p,
 .doc-body > ul,
 .doc-body > ol {
-    max-width: 58ch;
+    max-width: var(--measure);
 }
 
 /* Anchored headings must not land under the sticky rail. */
