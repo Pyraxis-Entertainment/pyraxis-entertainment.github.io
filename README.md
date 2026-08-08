@@ -237,12 +237,27 @@ problem in other people's tooling, and that moves. So it gets no
 of what this page needs, and applying it would freeze a page whose whole job
 is to stay current.
 
-**Its `dateModified` has nothing on the page to keep it honest.** Every other
-piece of structured data on this site mirrors something a reader can see: the
-docs pages' `dateModified` matches their visible *Checked* stamp, the FAQ
-answers are the visible answers. This page's is the single exception, and it
-is there because §5b.1 requires it. **Bump it whenever the body changes.**
-Nobody reading the page can catch it if you don't.
+**It carries a visible `Last updated` stamp, and the `dateModified` in its
+JSON-LD mirrors it.** Change one and change the other, in the same sitting.
+
+That stamp exists because the alternative was an invisible `dateModified` —
+structured data asserting something the page never says out loud, which is
+the same rule that keeps `operatingSystem` off the `SoftwareApplication`
+block on `geomancer/`. A hazard you can only document is a hazard; a date
+printed on the page is one a reader can catch. Every piece of structured data
+on this site now mirrors something visible.
+
+**The stamp is not the devlog's dated-log convention, and the two must not be
+confused.** They look identical and mean opposite things:
+
+| | Says |
+|---|---|
+| A devlog entry's date | This was true on this day, **and the entry is never edited afterwards** |
+| This page's *Last updated* | **This page is maintained**, and here is when it last was |
+
+Applying the devlog convention here would freeze a page whose entire job is
+to stay current. Applying this one to a devlog entry would licence quietly
+rewriting history. Neither is recoverable by looking at the page.
 
 **Its URL is permanent.** `/geomancer/why/` is short and angle-agnostic on
 purpose: the search language lives in the `<title>` and `<h1>`, which can be
@@ -366,7 +381,14 @@ people searching for help to documentation for a version they are not
 running. Readers reach archives through the version links, not through
 Google.
 
-### The support sentence
+### Pinned sentences
+
+Two sentences on this site are pinned: each states a commitment, each appears
+on several surfaces, and each must be **identical rather than merely
+equivalent** everywhere it appears. If one changes, it changes everywhere in
+the same sitting.
+
+#### The support sentence
 
 One sentence describes how support works, and it appears on four surfaces:
 `contact/index.html`, `geomancer/docs/index.html`, the Fab listing, and the
@@ -384,6 +406,24 @@ different published response windows is worse than having none, because
 each one makes the other look careless. The wording is deliberate: naming
 *when the inbox is looked at* is a routine that can be kept indefinitely,
 where a bare window is a promise that fails the first busy week.
+
+#### The version-support window
+
+Appears on `geomancer/docs/`, `geomancer/changelog/`, the FAQ section of
+`geomancer/`, and the Fab listing.
+
+> Geomancer supports the current Unreal Engine release and the one immediately before it.
+
+Same rule as the support sentence: **if it changes, it changes everywhere in
+the same sitting, and the string must be identical rather than merely
+equivalent.** A store page and a docs page describing the same commitment in
+two different ways is how a promise starts looking approximate.
+
+*The surrounding sentences differ by surface and that is fine — the docs page
+names the build target, the changelog points at the history below it, the FAQ
+links out to it. It is this clause that is pinned, not the paragraph around
+it. The docs page said "current Unreal release" for one commit, which is the
+exact drift this section exists to stop.*
 
 ## Refreshing the shots
 
