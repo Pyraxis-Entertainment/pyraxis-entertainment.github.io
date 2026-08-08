@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Hand-written, and correct at this size. Eight pages, one line each.
+  Hand-written, and correct at this size. Nine pages, one line each.
   See README.md, "Maintaining the sitemap" — a new page is added here in the
   same sitting it is created, or it does not get found.
 
@@ -20,6 +20,7 @@
 
     <!-- Geomancer -->
     <url><loc>https://pyraxisentertainment.com/geomancer/</loc></url>
+    <url><loc>https://pyraxisentertainment.com/geomancer/why/</loc></url>
     <url><loc>https://pyraxisentertainment.com/geomancer/docs/</loc></url>
     <url><loc>https://pyraxisentertainment.com/geomancer/docs/water/</loc></url>
     <url><loc>https://pyraxisentertainment.com/geomancer/changelog/</loc></url>

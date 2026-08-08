@@ -95,7 +95,8 @@ re-check that no page requests an external host.
 
 ```
 index.html                        Studio landing page
-geomancer/index.html              Geomancer — pitch, features, gallery
+geomancer/index.html              Geomancer — pitch, features, gallery, FAQ
+geomancer/why/index.html          Why imported terrain has no rivers
 geomancer/docs/index.html         Documentation — requirements, help, bug template
 geomancer/docs/water/index.html   The Water module guide
 geomancer/changelog/index.html    Releases and engine-version support
@@ -222,6 +223,31 @@ inside it is never read; a disallowed page that is linked from anywhere can
 still appear in results as a bare URL. The two are alternatives. `noindex` is
 the right one here because it removes the page outright rather than merely
 declining to look at it. The version scheme's step 2 is the whole mechanism.
+
+## The why page
+
+`geomancer/why/` is the acquisition piece — everything else on the site is
+bottom-of-funnel, and this is the one page written for somebody who has the
+problem and has never heard of us. Two conventions apply to it and to nothing
+else:
+
+**It is edited over time, and deliberately not a dated log.** It describes a
+problem in other people's tooling, and that moves. So it gets no
+`.verified-note` and no visible date — the devlog convention is the opposite
+of what this page needs, and applying it would freeze a page whose whole job
+is to stay current.
+
+**Its `dateModified` has nothing on the page to keep it honest.** Every other
+piece of structured data on this site mirrors something a reader can see: the
+docs pages' `dateModified` matches their visible *Checked* stamp, the FAQ
+answers are the visible answers. This page's is the single exception, and it
+is there because §5b.1 requires it. **Bump it whenever the body changes.**
+Nobody reading the page can catch it if you don't.
+
+**Its URL is permanent.** `/geomancer/why/` is short and angle-agnostic on
+purpose: the search language lives in the `<title>` and `<h1>`, which can be
+rewritten freely. A keyword baked into the path would lock the angle in
+forever.
 
 ## The 404 page
 
@@ -428,6 +454,11 @@ Before this goes to `main`:
 - [ ] Set the entry date in `devlog/geomancer-devlog-1.html`.
 - [ ] Set the figures-verified date in the same file.
 - [ ] Set the date on the entry card in `devlog/index.html`.
+- [ ] Settle the four invented sentences in `geomancer/why/` — confirm,
+      rewrite or cut each — then remove that page's `.pending` banner. They
+      are quoted in the banner itself, so this does not need the copy
+      document open. This is the only banner on the site waiting on
+      authorship rather than on a capture or a ruling.
 - [ ] Remove the `.pending` banner from `geomancer/index.html`.
 - [ ] Remove the `.pending` banner from `devlog/index.html`.
 - [ ] Remove the `.pending` banner from `devlog/geomancer-devlog-1.html`.

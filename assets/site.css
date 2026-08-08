@@ -465,6 +465,32 @@ em {
 }
 
 /* --------------------------------------------------------------------------
+   Pre-purchase FAQ
+
+   Question and answer pairs. The global h3 carries no top margin — card
+   titles sit flush against their card's padding — so consecutive pairs would
+   run together without this.
+
+   NO ACCORDION, and this is not a style preference: a collapsed answer is
+   not reliably indexed, and the whole reason this section exists is to be
+   indexed. Fab removed its Questions tab, so this is the replacement on a
+   surface we control. It stays open, it stays plain HTML, and the FAQPage
+   JSON-LD on the page mirrors this text exactly.
+   -------------------------------------------------------------------------- */
+
+.faq h3 {
+    margin-top: 2.5rem;
+}
+
+.faq h3:first-child {
+    margin-top: 0;
+}
+
+.faq p:last-child {
+    margin-bottom: 0;
+}
+
+/* --------------------------------------------------------------------------
    Sections and hero
    -------------------------------------------------------------------------- */
 
