@@ -111,8 +111,22 @@ a {
     text-underline-offset: 0.2em;
 }
 
-a:hover {
-    text-decoration-color: var(--warm-gold);
+/* Every hover style in this file is gated on (hover: hover).
+
+   On a touchscreen there is no pointer to move away, so a :hover style
+   latches after a tap and stays until the user taps something else. The
+   gate costs nothing on a mouse, where the query is always true.
+
+   Each gate is written around the rule it guards, IN PLACE. Do not gather
+   them into one @media block at the end of the file: six hover rules share
+   their specificity with a neighbouring :active or [aria-current] rule and
+   win or lose on source order alone, so moving them silently changes
+   behaviour. Every one of those pairs is commented where it sits — search
+   this file for "ORDER IS LOAD-BEARING". */
+@media (hover: hover) {
+    a:hover {
+        text-decoration-color: var(--warm-gold);
+    }
 }
 
 /* Visible keyboard focus. The original site had none. */
@@ -184,8 +198,10 @@ button:focus-visible {
     transition: box-shadow 0.3s ease;
 }
 
-.brand:hover .brand-mark {
-    box-shadow: 0 0 24px var(--gold-glow-strong);
+@media (hover: hover) {
+    .brand:hover .brand-mark {
+        box-shadow: 0 0 24px var(--gold-glow-strong);
+    }
 }
 
 /* Michroma is used for the wordmark ONLY, uppercase, 0.12–0.16em tracking. */
@@ -211,9 +227,28 @@ button:focus-visible {
     transition: color 0.25s ease, border-color 0.25s ease;
 }
 
-.site-nav a:hover {
-    color: var(--warm-white);
-    border-bottom-color: var(--rule-strong);
+/* ORDER IS LOAD-BEARING for the three rules below.
+
+   :hover, [aria-current="true"] and [aria-current="page"] are all
+   specificity (0,2,1), so nothing but source order separates them: the
+   current-state rules win because they come last. Move the hover rule
+   below them — or lift it into a shared @media block at the end of the
+   file — and hovering the current nav item repaints it, so the marker
+   vanishes at the moment the reader points at it. Keep this order. */
+@media (hover: hover) {
+    .site-nav a:hover {
+        color: var(--warm-white);
+        border-bottom-color: var(--rule-strong);
+    }
+}
+
+/* The section state. A documentation page is inside the Geomancer section
+   but is not the Geomancer page, so it marks the nav item "true" rather
+   than "page" — "page" would be a false claim to a screen reader. See
+   README, "Layout". Deliberately softer than the page state below: gold
+   text, no underline, so the two are distinguishable. */
+.site-nav a[aria-current="true"] {
+    color: var(--warm-gold);
 }
 
 .site-nav a[aria-current="page"] {
@@ -330,7 +365,15 @@ section {
     padding-top: 1rem;
 }
 
-.section-hero-flush {
+/* Scoped to .hero on purpose, and it must stay scoped.
+
+   Unscoped this was a single-class rule sitting above .hero's padding-block
+   shorthand, which resolves to the same physical property. Equal
+   specificity, later rule wins, so it never applied once from the day it
+   was written — the hero kept its full 96px bottom padding. The second
+   class makes it win on specificity instead of on position, so it survives
+   the file being reordered. */
+.hero.section-hero-flush {
     padding-bottom: 0;
 }
 
@@ -394,10 +437,19 @@ section {
     transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.btn:hover {
-    border-color: var(--rule-strong);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 20px rgba(201, 150, 60, 0.08);
+/* ORDER IS LOAD-BEARING. :hover and :active are both (0,2,0), so :active
+   only wins — and the button only presses back down under the cursor —
+   because it comes second. Same trap as the nav rules above. */
+@media (hover: hover) {
+    .btn:hover {
+        border-color: var(--rule-strong);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 20px rgba(201, 150, 60, 0.08);
+    }
+}
+
+.btn:active {
+    transform: translateY(0);
 }
 
 .btn-arrow {
@@ -416,9 +468,14 @@ section {
     color: var(--warm-white);
 }
 
-.cta-crimson:hover {
-    border-color: var(--crimson);
-    box-shadow: 0 4px 22px rgba(139, 30, 47, 0.35);
+/* Gated like every other hover rule even though .cta-crimson is not in use
+   yet — guarding it now means the View on Fab button arrives already
+   correct on a phone, rather than depending on someone remembering. */
+@media (hover: hover) {
+    .cta-crimson:hover {
+        border-color: var(--crimson);
+        box-shadow: 0 4px 22px rgba(139, 30, 47, 0.35);
+    }
 }
 
 /* --------------------------------------------------------------------------
@@ -439,10 +496,17 @@ a.card {
     color: inherit;
 }
 
-a.card:hover {
-    border-color: var(--rule-strong);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 26px rgba(201, 150, 60, 0.07);
+/* ORDER IS LOAD-BEARING — :active must stay below :hover, both (0,2,1). */
+@media (hover: hover) {
+    a.card:hover {
+        border-color: var(--rule-strong);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 26px rgba(201, 150, 60, 0.07);
+    }
+}
+
+a.card:active {
+    transform: translateY(0);
 }
 
 .card-grid {
@@ -900,10 +964,17 @@ figcaption {
     transition: border-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
 }
 
-.follow a:hover {
-    border-color: var(--rule-strong);
-    color: var(--warm-white);
-    transform: translateY(-1px);
+/* ORDER IS LOAD-BEARING — :active must stay below :hover, both (0,2,1). */
+@media (hover: hover) {
+    .follow a:hover {
+        border-color: var(--rule-strong);
+        color: var(--warm-white);
+        transform: translateY(-1px);
+    }
+}
+
+.follow a:active {
+    transform: translateY(0);
 }
 
 .follow svg {
@@ -914,9 +985,11 @@ figcaption {
     opacity: 0.8;
 }
 
-.follow a:hover svg {
-    fill: var(--warm-gold);
-    opacity: 1;
+@media (hover: hover) {
+    .follow a:hover svg {
+        fill: var(--warm-gold);
+        opacity: 1;
+    }
 }
 
 /* 0.55 alpha = 5.43:1 on Void, WCAG AA. The original 0.2 was 1.75:1. */
@@ -1001,9 +1074,11 @@ figcaption {
     border-bottom: 1px solid var(--rule);
 }
 
-.breadcrumb a:hover {
-    color: var(--warm-gold);
-    border-bottom-color: var(--rule-strong);
+@media (hover: hover) {
+    .breadcrumb a:hover {
+        color: var(--warm-gold);
+        border-bottom-color: var(--rule-strong);
+    }
 }
 
 .breadcrumb span {
@@ -1034,9 +1109,18 @@ figcaption {
     transition: border-color 0.3s ease, color 0.3s ease;
 }
 
-.doc-nav a:hover {
-    border-color: var(--rule-strong);
-    color: var(--warm-gold);
+/* ORDER IS LOAD-BEARING, same as the site nav: :hover and
+   [aria-current="page"] are both (0,2,1) and only source order separates
+   them. They happen to declare identical values today, so nothing looks
+   wrong if they swap — which is exactly why this is worth writing down.
+   The moment the current pill is given its own background (it should be:
+   a hovered pill and the current pill are indistinguishable), order starts
+   to matter visibly. Keep the current-state rule last. */
+@media (hover: hover) {
+    .doc-nav a:hover {
+        border-color: var(--rule-strong);
+        color: var(--warm-gold);
+    }
 }
 
 .doc-nav a[aria-current="page"] {
@@ -1120,9 +1204,11 @@ figcaption {
     line-height: 1.4;
 }
 
-.doc-toc a:hover {
-    color: var(--warm-gold);
-    border-left-color: var(--rule-strong);
+@media (hover: hover) {
+    .doc-toc a:hover {
+        color: var(--warm-gold);
+        border-left-color: var(--rule-strong);
+    }
 }
 
 .doc-body {
