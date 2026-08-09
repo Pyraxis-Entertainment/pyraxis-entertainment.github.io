@@ -25,13 +25,13 @@
     <!-- Structured data. Must not assert anything this page does not already
          say out loud — see the root index.html for the full note.
 
-         dateModified is the ONE field on this site not mirrored by visible
-         text, and it is here because §5b.1 requires it. This page is
-         deliberately NOT a dated log — it describes a problem in other
-         people's tooling and that moves, so it gets edited rather than
-         stamped. The consequence is that this date has nothing on the page
-         to keep it honest: BUMP IT WHENEVER THE BODY CHANGES, or it quietly
-         becomes a lie no reader can catch. See README, "The why page". -->
+         dateModified is here because §5b.1 requires it, and it is mirrored
+         by the visible "Last updated" stamp above the lede — the two must
+         always say the same day. This page is deliberately NOT a dated log
+         — it describes a problem in other people's tooling and that moves,
+         so it gets edited rather than stamped. BUMP BOTH WHENEVER THE BODY
+         CHANGES, or the stamp and the date drift apart and one of them
+         becomes a lie. See README, "The why page". -->
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
@@ -39,7 +39,7 @@
         "headline": "Why your imported terrain has no rivers",
         "description": "A heightmap carries elevation and nothing else, so erosion valleys arrive in Unreal bone dry. Why that happens, what your options are, and what I built instead.",
         "url": "https://pyraxisentertainment.com/geomancer/why/",
-        "dateModified": "2026-08-08",
+        "dateModified": "2026-08-09",
         "publisher": {
             "@type": "Organization",
             "name": "Pyraxis Entertainment",
@@ -72,22 +72,15 @@
                 <p class="breadcrumb"><a href="../">Geomancer</a><span aria-hidden="true">/</span>Why</p>
 
                 <!-- REMOVE THIS BLOCK BEFORE THE SITE GOES LIVE.
-                     Unlike the other .pending banners this one is not waiting on a
-                     capture or a ruling — it is waiting on the author confirming
-                     four sentences that were drafted for him, in his voice, from a
-                     short account he gave. They are quoted in full below so they
-                     can be checked without any other document open. See README,
+                     The four invented sentences were settled by Matt on 9 Aug 2026;
+                     this piece is now his own account and the copy is finished.
+                     What holds the page back is no longer its content. `main` is a
+                     single-page holding site, so this page's nav and both closing
+                     CTAs point at URLs that do not exist there. See README,
                      "Publishing". -->
                 <div class="pending" role="note">
-                    <p class="pending-label">Not published — four sentences in this piece are not yet the author's own</p>
-                    <p class="pending-note">The personal section is written in the first person about Matt, from a short account he gave. Four specifics were invented to make it read, and an invented sentence in a first-person story is a lie rather than a flourish. Each needs confirming, rewriting or cutting before this page goes live:</p>
-                    <ul>
-                        <li>"a world that is entirely grey boxes" — the state of the prototype is assumed.</li>
-                        <li>"Give me a bug to chase and I'll happily lose a weekend to it" — plausible, but a preference put in his mouth.</li>
-                        <li>"put something down, decide it looks wrong, and move it, and still not know whether it's right" — an invented rendering of what stalling feels like.</li>
-                        <li>"I didn't want a random world, I wanted <em>my</em> world, populated properly" — inferred, and the load-bearing sentence of the whole piece. Worth rewriting in his own words rather than approving.</li>
-                    </ul>
-                    <p class="pending-note">Everything else in that section is his as he told it. Remove this block once the four are settled.</p>
+                    <p class="pending-label">Not published — the pages this one links to are not live yet</p>
+                    <p class="pending-note">The copy is finished and signed off. This page's nav and its two closing links point at <code>/geomancer/</code> and <code>/geomancer/docs/</code>, neither of which exists on <code>main</code>. Publishing it on its own would ship a persuasive article that dead-ends. Remove this block when those pages go live in the same push.</p>
                 </div>
 
                 <p class="eyebrow">Geomancer</p>
@@ -103,7 +96,7 @@
                      says "this was true on this day, and the entry is never edited".
                      This says the opposite: the page is maintained, and here is when
                      it last was. The two look identical and mean opposite things. -->
-                <p class="doc-version">Last updated 8 August 2026</p>
+                <p class="doc-version">Last updated 9 August 2026</p>
                 <hr class="rule">
                 <p class="lede">You export a heightmap out of Gaea, or World Creator, or whatever you sculpt in. It looks fantastic. There are valleys cut into it, branching down off the high ground exactly the way real ones do, because an erosion simulation spent a few million iterations putting them there.</p>
             </div>
@@ -142,11 +135,11 @@
 
                     <p>I came to it because I find worldbuilding hard.</p>
 
-                    <p>I'm one person. I was early into prototyping a game, at the stage where you have systems working and a world that is entirely grey boxes, and I'd started playing with Unreal's water bodies mostly to see what they could do. And I hit the thing I always hit, which is that a blank landscape is a blank page. Give me a bug to chase and I'll happily lose a weekend to it. Give me an empty valley and ask me where the river should go, and I will stare at it, put something down, decide it looks wrong, and move it, and still not know whether it's right.</p>
+                    <p>I was working alone. I wanted a way to lay out lakes and rivers that didn't mean placing every one by hand — it eats the time I'd rather spend on design, it gets tedious, and automating it looked like the way to get better results, not just faster ones. And underneath that was the thing I always hit, which is that a blank landscape is a blank page. Give me something that isn't quite right yet and I'll keep at it until it is. Give me an empty valley and ask me where the river should go, and I will stare at it, put something down, decide it looks wrong, and move it, and still not know whether it's right.</p>
 
                     <p>That's not modesty and it isn't a complaint. It's just the shape of what I'm good at. I'd guess a fair number of solo developers reading this recognise it, because the part of this job that stops you is rarely the part you expected.</p>
 
-                    <p>What I wanted was for the world to meet me halfway. Not to generate something for me — I didn't want a random world, I wanted <em>my</em> world, populated properly. I wanted to point at terrain I'd made and have the water turn up where the terrain said it should.</p>
+                    <p>What I wanted was for the world to meet me halfway. Not to generate something for me — I didn't want a random world, I wanted a world that looks and feels <em>real</em> at any scale. I wanted to point at terrain I'd made and have the water turn up where the terrain said it should.</p>
 
                     <p>So I started writing it. And it turned out the terrain really does know: everything needed to place water correctly is already in the heightmap, if you're willing to do the analysis the erosion tool did and nobody bothered to keep.</p>
 
