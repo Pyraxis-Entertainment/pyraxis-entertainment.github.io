@@ -1,0 +1,17 @@
+# Normalise all text to LF in the repository and in the working tree.
+# Without this, diffs on a Windows checkout can read as whole-file rewrites.
+* text=auto eol=lf
+
+# Binary assets — never touch these.
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.webp binary
+*.gif  binary
+*.ico  binary
+*.mp4  binary
+*.woff binary
+*.woff2 binary
+
+# SVG is text, but keep it LF like everything else.
+*.svg text eol=lf

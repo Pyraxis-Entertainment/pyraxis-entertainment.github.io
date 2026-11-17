@@ -1,0 +1,1941 @@
+/* ==========================================================================
+   Aurelian Entertainment — site styles
+   Plain CSS. No framework, no build step, no dependencies.
+
+   Tokens inherited from the original one-page site rather than re-derived,
+   so the whole site reads as one family.
+
+   Palette rules (Studio Standards v2):
+     - never pure black, never pure white on a designed surface
+     - Warm Gold is the workhorse accent; Crimson is the accent's accent
+     - body copy is Warm White on Void (AAA); gold is for headings and rules
+
+   ---------------------------------------------------------------------------
+   WHY SO MANY "ORDER IS LOAD-BEARING" COMMENTS
+
+   Search this file for that phrase and you will find several. They are not
+   bad luck, and the next one is not either — it is the predictable cost of
+   how this stylesheet is built, so it is worth understanding before you
+   touch a rule pair.
+
+   Almost every selector here is a single class. That is good practice and it
+   makes specificity trivial to reason about. The consequence is that
+   everything TIES, so source order decides everything — and a tie is
+   completely invisible until a second rule targets the same element. Every
+   collision found so far was silent until something else changed:
+
+     - .site-nav a:hover vs [aria-current] — invisible until the section
+       state was added
+     - .doc-nav a:hover vs [aria-current="page"] — the two declared identical
+       values, so swapping them looked like nothing, until the current pill
+       gained a background
+     - .section-hero-flush vs .hero — lost on order and never applied once,
+       from the day it was written
+     - :hover vs :active on .btn, a.card, .follow a
+     - .card h2 vs .entry-title — this one is a specificity win rather than
+       an order one, and it silently repainted the devlog card titles
+
+   The mitigation at this size is the comments: state the tie where it sits,
+   say which rule has to come last, and say what breaks if it moves. That is
+   cheaper than restructuring and it survives someone reading only the part
+   of the file they are editing.
+
+   If it bites a sixth time, the structural fix is to group rules BY
+   COMPONENT rather than by type, so a component's base, hover, current and
+   active rules sit adjacent and their order is self-evident on sight. That
+   is a refactor of the whole file, not a patch — do it deliberately or not
+   at all.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Fonts — vendored, no CDN
+
+   Both families are served from this repository. Rule 2 bans CDN
+   dependencies outright, and the deciding argument was a different one: the
+   site has no privacy notice because it collects nothing, and that claim was
+   slightly untrue while a Google Fonts stylesheet sent every visitor's IP to
+   Google on page load. Self-hosting does not reduce a risk so much as make a
+   statement we already make completely true.
+
+   LICENCE: DM Sans and Cinzel are both SIL Open Font Licence 1.1, which
+   permits this. Recorded in README.md, as Rule 2 requires of anything
+   vendored — if you add a font, add it there too.
+
+   DM Sans ships as a VARIABLE font, so one file covers the whole 300-500
+   range per style. Cinzel is vendored at the one weight the wordmark uses,
+   600. Six files, 136 KB, replacing four network round trips to a third
+   party on every page. The latin / latin-ext split and its unicode-range
+   values are Google's own, kept so a browser still downloads only the
+   subset a page actually needs.
+   -------------------------------------------------------------------------- */
+
+@font-face {
+    font-family: 'DM Sans';
+    font-style: normal;
+    font-weight: 300 500;
+    font-display: swap;
+    src: url('fonts/dmsans-normal-latin.woff2') format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+    font-family: 'DM Sans';
+    font-style: normal;
+    font-weight: 300 500;
+    font-display: swap;
+    src: url('fonts/dmsans-normal-latin-ext.woff2') format('woff2');
+    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+    font-family: 'DM Sans';
+    font-style: italic;
+    font-weight: 300 500;
+    font-display: swap;
+    src: url('fonts/dmsans-italic-latin.woff2') format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+    font-family: 'DM Sans';
+    font-style: italic;
+    font-weight: 300 500;
+    font-display: swap;
+    src: url('fonts/dmsans-italic-latin-ext.woff2') format('woff2');
+    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+    font-family: 'Cinzel';
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+    src: url('fonts/cinzel-600-latin.woff2') format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+    font-family: 'Cinzel';
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+    src: url('fonts/cinzel-600-latin-ext.woff2') format('woff2');
+    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+:root {
+    --void: #12121A;
+    --charcoal: #1A1A22;
+    --warm-gold: #C9963C;
+    --crimson: #8B1E2F;
+    --warm-white: #F0EDE6;
+    /* Warnings only — readable as text, 6.74:1 on Void. */
+    --danger: #E28079;
+
+    --gold-glow: rgba(201, 150, 60, 0.15);
+    --gold-glow-strong: rgba(201, 150, 60, 0.3);
+
+    /* Border and rule tints, derived from Warm Gold. */
+    --rule-faint: rgba(201, 150, 60, 0.1);
+    --rule: rgba(201, 150, 60, 0.22);
+    --rule-strong: rgba(201, 150, 60, 0.35);
+
+    /* Text ladder. Every step below is >= 4.5:1 on Void (WCAG AA).
+       The original footer sat at 0.2 (1.75:1) and is deliberately not
+       carried over — it would have failed on all four pages. */
+    --text: var(--warm-white);
+    --text-muted: rgba(240, 237, 230, 0.78);
+    --text-dim: rgba(240, 237, 230, 0.55);
+
+    /* Prose measure. `ch` is the width of "0", and DM Sans's "0" is 0.6875em
+       against an average text character of ~0.49em — so a ch value reads
+       about 1.4x larger than the character count it looks like. 54ch lands
+       near 75 characters, the top of the comfortable 60-75 range. It was
+       68ch, which measured ~100 characters on the lede. */
+    --measure: 54ch;
+    --page: 1100px;
+}
+
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+}
+
+body {
+    font-family: 'DM Sans', 'Inter', 'Segoe UI', sans-serif;
+    font-weight: 300;
+    background-color: var(--void);
+    color: var(--text);
+    line-height: 1.65;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Subtle noise texture overlay — carried over from the one-pager. */
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Radial gold glow behind the top of the page. */
+body::after {
+    content: '';
+    position: absolute;
+    top: -240px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 900px;
+    height: 900px;
+    max-width: 160vw;
+    background: radial-gradient(circle, var(--gold-glow) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Shared furniture
+   -------------------------------------------------------------------------- */
+
+.wrap {
+    width: 100%;
+    max-width: var(--page);
+    margin-inline: auto;
+    padding-inline: 1.5rem;
+}
+
+main {
+    flex: 1 0 auto;
+    position: relative;
+    z-index: 1;
+}
+
+a {
+    color: var(--warm-gold);
+    text-decoration-color: var(--rule-strong);
+    text-underline-offset: 0.2em;
+}
+
+/* Every hover style in this file is gated on (hover: hover).
+
+   On a touchscreen there is no pointer to move away, so a :hover style
+   latches after a tap and stays until the user taps something else. The
+   gate costs nothing on a mouse, where the query is always true.
+
+   Each gate is written around the rule it guards, IN PLACE. Do not gather
+   them into one @media block at the end of the file: six hover rules share
+   their specificity with a neighbouring :active or [aria-current] rule and
+   win or lose on source order alone, so moving them silently changes
+   behaviour. Every one of those pairs is commented where it sits — search
+   this file for "ORDER IS LOAD-BEARING". */
+@media (hover: hover) {
+    a:hover {
+        text-decoration-color: var(--warm-gold);
+    }
+}
+
+/* Visible keyboard focus. The original site had none. */
+a:focus-visible,
+button:focus-visible {
+    outline: 2px solid var(--warm-gold);
+    outline-offset: 3px;
+    border-radius: 3px;
+}
+
+/* A focused button keeps its own corners. The 3px radius above is for plain
+   links, but a:focus-visible (0,1,1) outranks .btn's 10px (0,1,0), so every
+   button squared its corners under keyboard focus. This is (0,2,0), so it
+   wins wherever it sits. */
+.btn:focus-visible {
+    border-radius: 10px;
+}
+
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 100;
+    background: var(--charcoal);
+    color: var(--warm-white);
+    padding: 0.75rem 1.25rem;
+    border: 1px solid var(--rule-strong);
+    border-radius: 0 0 8px 0;
+}
+
+.skip-link:focus {
+    left: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Header
+   -------------------------------------------------------------------------- */
+
+.site-header {
+    position: relative;
+    z-index: 2;
+    border-bottom: 1px solid var(--rule-faint);
+}
+
+.site-header .wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    padding-block: 1.25rem;
+}
+
+.brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.8rem;
+    text-decoration: none;
+    color: inherit;
+}
+
+.brand-mark {
+    width: 38px;
+    height: 38px;
+    flex-shrink: 0;
+    border-radius: 9px;
+    background: var(--void);
+    border: 2px solid var(--warm-gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--warm-gold);
+    box-shadow: 0 0 18px var(--gold-glow);
+    transition: box-shadow 0.3s ease;
+}
+
+.brand-mark svg {
+    display: block;
+    width: 22px;
+    height: 22px;
+    fill: currentColor;
+}
+
+@media (hover: hover) {
+    .brand:hover .brand-mark {
+        box-shadow: 0 0 24px var(--gold-glow-strong);
+    }
+}
+
+/* Cinzel is used for the wordmark ONLY, uppercase, 0.10–0.14em tracking. */
+.brand-name {
+    font-family: 'Cinzel', serif;
+    font-weight: 600;
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--warm-gold);
+}
+
+.site-nav {
+    display: flex;
+    gap: 1.75rem;
+    font-size: 0.92rem;
+}
+
+.site-nav a {
+    color: var(--text-muted);
+    text-decoration: none;
+    padding-block: 0.2rem;
+    border-bottom: 1px solid transparent;
+    transition: color 0.25s ease, border-color 0.25s ease;
+}
+
+/* ORDER IS LOAD-BEARING for the three rules below.
+
+   :hover, [aria-current="true"] and [aria-current="page"] are all
+   specificity (0,2,1), so nothing but source order separates them: the
+   current-state rules win because they come last. Move the hover rule
+   below them — or lift it into a shared @media block at the end of the
+   file — and hovering the current nav item repaints it, so the marker
+   vanishes at the moment the reader points at it. Keep this order. */
+@media (hover: hover) {
+    .site-nav a:hover {
+        color: var(--warm-white);
+        border-bottom-color: var(--rule-strong);
+    }
+}
+
+/* The section state. A documentation page is inside the Geomancer section
+   but is not the Geomancer page, so it marks the nav item "true" rather
+   than "page" — "page" would be a false claim to a screen reader. See
+   README, "Layout". Deliberately softer than the page state below: gold
+   text, no underline, so the two are distinguishable. */
+.site-nav a[aria-current="true"] {
+    color: var(--warm-gold);
+}
+
+.site-nav a[aria-current="page"] {
+    color: var(--warm-gold);
+    border-bottom-color: var(--warm-gold);
+}
+
+/* --------------------------------------------------------------------------
+   Typography
+   -------------------------------------------------------------------------- */
+
+h1, h2, h3 {
+    font-family: 'DM Sans', 'Inter', 'Segoe UI', sans-serif;
+    font-weight: 500;
+    line-height: 1.2;
+    color: var(--warm-gold);
+    letter-spacing: -0.01em;
+}
+
+h1 {
+    font-size: clamp(2rem, 5vw, 3rem);
+}
+
+h2 {
+    font-size: clamp(1.4rem, 3vw, 1.9rem);
+    margin-top: 3rem;
+    margin-bottom: 1rem;
+}
+
+/* An eyebrow already provides the separation a heading's top margin gives. */
+.eyebrow + h2 {
+    margin-top: 0;
+}
+
+h3 {
+    font-size: 1.15rem;
+    color: var(--warm-white);
+    margin-bottom: 0.4rem;
+}
+
+p {
+    margin-bottom: 1.15rem;
+}
+
+strong {
+    font-weight: 500;
+    color: var(--warm-white);
+}
+
+em {
+    font-style: italic;
+}
+
+.lede {
+    font-size: clamp(1.05rem, 2.2vw, 1.25rem);
+    color: var(--text-muted);
+    max-width: var(--measure);
+}
+
+.tagline {
+    font-style: italic;
+    font-size: 1.05rem;
+    color: var(--text-muted);
+}
+
+.eyebrow {
+    font-size: 0.78rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--warm-gold);
+    margin-bottom: 0.75rem;
+}
+
+.rule {
+    width: 56px;
+    height: 1px;
+    border: 0;
+    background: linear-gradient(90deg, var(--warm-gold), transparent);
+    margin-block: 2.5rem;
+}
+
+/* Prose column — used by devlog entries. */
+.prose {
+    max-width: var(--measure);
+}
+
+.prose ul {
+    margin: 0 0 1.5rem 1.1rem;
+}
+
+.prose li {
+    margin-bottom: 0.9rem;
+    padding-left: 0.3rem;
+}
+
+.prose li::marker {
+    color: var(--warm-gold);
+}
+
+/* --------------------------------------------------------------------------
+   Pre-purchase FAQ
+
+   Question and answer pairs. The global h3 carries no top margin — card
+   titles sit flush against their card's padding — so consecutive pairs would
+   run together without this.
+
+   NO ACCORDION, and this is not a style preference: a collapsed answer is
+   not reliably indexed, and the whole reason this section exists is to be
+   indexed. Fab removed its Questions tab, so this is the replacement on a
+   surface we control. It stays open, it stays plain HTML, and the FAQPage
+   JSON-LD on the page mirrors this text exactly.
+   -------------------------------------------------------------------------- */
+
+.faq h3 {
+    margin-top: 2.5rem;
+}
+
+.faq h3:first-child {
+    margin-top: 0;
+}
+
+.faq p:last-child {
+    margin-bottom: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Sections and hero
+   -------------------------------------------------------------------------- */
+
+section {
+    padding-block: 3.5rem;
+}
+
+/* Section following one that already supplies the top spacing. */
+.section-flush {
+    padding-top: 0;
+}
+
+.section-snug {
+    padding-top: 1rem;
+}
+
+/* Scoped to .hero on purpose, and it must stay scoped.
+
+   Unscoped this was a single-class rule sitting above .hero's padding-block
+   shorthand, which resolves to the same physical property. Equal
+   specificity, later rule wins, so it never applied once from the day it
+   was written — the hero kept its full 96px bottom padding. The second
+   class makes it win on specificity instead of on position, so it survives
+   the file being reordered. */
+.hero.section-hero-flush {
+    padding-bottom: 0;
+}
+
+.figure-flush {
+    margin: 0;
+}
+
+/* Asymmetric on purpose. With equal padding the first gap on every page
+   measured 146-152px content-to-content, while every other section break on
+   the same page is 112px — so the first break a visitor sees was 40px larger
+   than the page's own rhythm and read as a deleted element. .section-flush
+   only zeroes the following section's padding; the hero's own survived it. */
+.hero {
+    padding-top: clamp(3.5rem, 9vw, 6rem);
+    padding-bottom: clamp(2rem, 4vw, 3rem);
+}
+
+/* A hero rule separates an h1 from its own lede. At the global 2.5rem that
+   is 40px + rule + 40px — 80px between a title and its subtitle. */
+.hero .rule {
+    margin-block: 1.75rem;
+}
+
+.hero-mark {
+    width: 76px;
+    height: 76px;
+    border-radius: 16px;
+    background: var(--void);
+    border: 2px solid var(--warm-gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.75rem;
+    box-shadow: 0 0 30px var(--gold-glow), 0 0 60px rgba(201, 150, 60, 0.06);
+}
+
+.hero-mark svg {
+    display: block;
+    width: 44px;
+    height: 44px;
+    fill: var(--warm-gold);
+}
+
+/* The full wordmark, Cinzel, wordmark-only use. */
+.wordmark {
+    font-family: 'Cinzel', serif;
+    font-weight: 600;
+    font-size: clamp(1.05rem, 3.6vw, 1.7rem);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--warm-gold);
+    line-height: 1.45;
+    margin-bottom: 1.1rem;
+}
+
+.button-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.9rem;
+    margin-top: 2rem;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.75rem 1.4rem;
+    border-radius: 10px;
+    background: var(--charcoal);
+    border: 1px solid var(--rule);
+    color: var(--warm-white);
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* ORDER IS LOAD-BEARING. :hover and :active are both (0,2,0), so :active
+   only wins — and the button only presses back down under the cursor —
+   because it comes second. Same trap as the nav rules above. */
+/* ORDER IS LOAD-BEARING. :hover and :active are both (0,2,0), so :active
+   only wins — and the button only presses back down under the cursor —
+   because it comes second. Same trap as the nav rules above.
+
+   The border goes to full Warm Gold on hover. It was --rule-strong, which
+   moved the border from 0.22 to 0.35 alpha: a change you had to be looking
+   for to notice on the site's only interactive control. */
+@media (hover: hover) {
+    .btn:hover {
+        border-color: var(--warm-gold);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 20px rgba(201, 150, 60, 0.08);
+    }
+
+    .btn:hover .btn-arrow {
+        transform: translateX(3px);
+    }
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+.btn-arrow {
+    color: var(--warm-gold);
+    transition: transform 0.3s ease;
+}
+
+/* The buy button: Warm Gold, the page's one action, one per page. The class
+   names the job, not the colour.
+   RESERVED — deliberately unused at v1. This is the "View on Fab" button for
+   the moment the Geomancer listing goes live. Geomancer has no store page
+   yet, so the page states that in a sentence rather than offering a button
+   that goes nowhere. Do not delete this as dead code. Void on Warm Gold is
+   7.02:1. */
+.cta-buy {
+    background: var(--warm-gold);
+    border-color: var(--warm-gold);
+    color: var(--void);
+    font-weight: 500;
+}
+
+/* .btn-arrow is Warm Gold, which would vanish on this button. */
+.cta-buy .btn-arrow {
+    color: inherit;
+}
+
+/* Gated like every other hover rule even though .cta-buy is not in use
+   yet — guarding it now means the View on Fab button arrives already
+   correct on a phone, rather than depending on someone remembering. */
+@media (hover: hover) {
+    .cta-buy:hover {
+        border-color: var(--warm-gold);
+        box-shadow: 0 4px 22px rgba(201, 150, 60, 0.35);
+    }
+}
+
+/* The site's focus ring is Warm Gold, which would read as part of a gold
+   button. This one is Warm White, offset onto the background behind the
+   button (15.9:1 on Void, 14.8:1 on Charcoal), and declared in full so it
+   stays off the gold if the site-wide ring ever changes. */
+.cta-buy:focus-visible {
+    outline: 2px solid var(--warm-white);
+    outline-offset: 3px;
+}
+
+/* --------------------------------------------------------------------------
+   Cards
+   -------------------------------------------------------------------------- */
+
+.card {
+    background: var(--charcoal);
+    border: 1px solid var(--rule-faint);
+    border-radius: 12px;
+    padding: 1.6rem;
+    transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* The global h2/h3 top margin does not belong inside a card. On /contact/ it
+   measured 75px above a card title against 27px below it. */
+.card > :first-child {
+    margin-top: 0;
+}
+
+/* /contact/ carried two card-title systems at once: h2 titles in
+   .feature-list cards at 30.4px gold, and h3 titles in .card-grid cards at
+   18.4px warm white, on the same page. Both size and colour come into line,
+   because matching only the size left the same split in a quieter form.
+
+   The system underneath, so this is not arbitrary: a PLAIN card title is
+   warm white, whatever heading level it happens to be. .entry-title is gold
+   because those cards are links, and gold is the link colour — the gold
+   there is carrying meaning, not decoration. That is also why the docs
+   heading rules are untouched: .doc-body h3 is gold because it is a document
+   heading, not a card title. */
+.card h2 {
+    font-size: 1.25rem;
+    color: var(--warm-white);
+}
+
+/* 0.4rem from the global h3 is tight against the paragraph below it relative
+   to the card's own 25.6px padding. */
+.card h3 {
+    margin-bottom: 0.65rem;
+}
+
+a.card {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+}
+
+/* ORDER IS LOAD-BEARING — :active must stay below :hover, both (0,2,1). */
+@media (hover: hover) {
+    a.card:hover {
+        border-color: var(--rule-strong);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 26px rgba(201, 150, 60, 0.07);
+    }
+}
+
+a.card:active {
+    transform: translateY(0);
+}
+
+.card-grid {
+    display: grid;
+    gap: 1.25rem;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.feature-list {
+    display: grid;
+    gap: 1.25rem;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    margin-top: 2rem;
+    list-style: none;
+}
+
+.feature-list p {
+    margin-bottom: 0;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+}
+
+/* Where the card is a link, the <li> is the grid item and the <a> has to be
+   told to fill it — otherwise a shorter card in the row stops short of the
+   row's height and the hover target ends above the card's own bottom edge. */
+.feature-list > li > a.card {
+    height: 100%;
+}
+
+.split {
+    display: grid;
+    gap: 2.5rem;
+    grid-template-columns: 1fr;
+    align-items: center;
+}
+
+@media (min-width: 860px) {
+    .split {
+        grid-template-columns: 1.05fr 1fr;
+        gap: 3.5rem;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   Images
+   -------------------------------------------------------------------------- */
+
+figure {
+    margin-block: 2.25rem;
+}
+
+figure img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    border: 1px solid var(--rule-faint);
+    background: var(--charcoal);
+}
+
+/* Caps a figure at its image's native width, centred, so a small capture is
+   not stretched to the column. One user today: the water guide's panel crop,
+   532 px wide. Take the class off that figure when the cleaner, larger
+   capture lands. */
+.figure-native {
+    max-width: 532px;
+    margin-inline: auto;
+}
+
+figcaption {
+    margin-top: 0.75rem;
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    line-height: 1.55;
+}
+
+/* Wide figures inside a prose column may bleed slightly wider on desktop. */
+@media (min-width: 1000px) {
+    .prose .bleed {
+        width: calc(100% + 8rem);
+        margin-left: -4rem;
+    }
+}
+
+.gallery {
+    display: grid;
+    gap: 1.75rem;
+    grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+}
+
+.gallery figure {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+/* The real captures are 1.92:1 and 1.79:1 while .frame-pending reserves
+   16:9, so captions started up to 19px apart and the row would have re-jigged
+   as each shot landed. Pinning the images to the frames' own ratio holds the
+   grid still through the capture session. Images only — the pending frames
+   already carry the ratio themselves. */
+.gallery figure img {
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+}
+
+/* A comparison block is the point of the gallery, not one cell of it. */
+.gallery > .compare {
+    grid-column: 1 / -1;
+}
+
+@media (max-width: 700px) {
+    .gallery {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   Pending / placeholder blocks
+   These are deliberately loud. Nothing carrying one of these may ship.
+   Crimson here is decoration, as everywhere in the palette; warnings on a
+   page that ships use --danger (.callout--warn).
+   -------------------------------------------------------------------------- */
+
+.pending {
+    border: 2px dashed var(--crimson);
+    border-radius: 10px;
+    background: rgba(139, 30, 47, 0.08);
+    padding: 1.4rem 1.5rem;
+    margin-block: 2rem;
+}
+
+.pending-label {
+    font-size: 0.75rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--warm-white);
+    font-weight: 500;
+    margin-bottom: 0.75rem;
+}
+
+.pending-label::before {
+    content: '\25C6';
+    color: var(--crimson);
+    margin-right: 0.6rem;
+    /* Crimson is decorative here; the word "PENDING" carries the meaning,
+       so nothing depends on colour alone. */
+}
+
+.pending ul {
+    margin: 0 0 0 1.1rem;
+}
+
+.pending li {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: 0.35rem;
+}
+
+.pending p:last-child {
+    margin-bottom: 0;
+}
+
+.pending-note {
+    margin-top: 0.75rem;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.pending code {
+    font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace;
+    font-size: 0.85em;
+    color: var(--warm-gold);
+}
+
+/* --------------------------------------------------------------------------
+   Pending media frames
+
+   A slot whose image has not been captured yet. Deliberately QUIET — it has
+   to read as "not photographed yet", not as a broken page. The loud
+   .pending banner at the top of the page is what stops an unfinished site
+   going live; this is not that, and must not try to be.
+
+   The frame holds the final aspect ratio and the real caption sits beneath
+   it already, so when the file lands the image drops in place.
+   -------------------------------------------------------------------------- */
+
+.frame-pending {
+    aspect-ratio: 16 / 9;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.7rem;
+    padding: 1.5rem;
+    text-align: center;
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    background:
+        linear-gradient(180deg, rgba(201, 150, 60, 0.05), transparent 55%),
+        var(--charcoal);
+}
+
+.frame-pending svg {
+    width: 30px;
+    height: 30px;
+    fill: none;
+    stroke: var(--warm-gold);
+    stroke-width: 1.25;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    opacity: 0.65;
+}
+
+.frame-pending p {
+    margin: 0;
+    font-size: 0.72rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--warm-gold);
+}
+
+/* --------------------------------------------------------------------------
+   Before/after comparison
+
+   Without JavaScript this is two panes side by side (stacked on narrow
+   screens), each labelled, under one caption — complete and readable on its
+   own. assets/compare.js upgrades it into a draggable comparison by adding
+   .compare--ready. Everything below the "ready" marker is that upgrade; if
+   the script never runs, none of it applies.
+   -------------------------------------------------------------------------- */
+
+.compare {
+    margin-block: 2.25rem;
+}
+
+.compare-stack {
+    display: grid;
+    gap: 1rem;
+}
+
+@media (min-width: 700px) {
+    .compare-stack {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.compare-pane img,
+.compare-pane picture {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+}
+
+.compare-pane-label {
+    margin: 0.6rem 0 0;
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+}
+
+/* ---- upgraded state ---- */
+
+.compare--ready .compare-stack {
+    display: block;
+    position: relative;
+    gap: 0;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.compare--ready .compare-pane[data-compare-pane="after"] {
+    position: absolute;
+    inset: 0;
+    /* Left of the divider shows "before", right of it shows "after". */
+    clip-path: inset(0 0 0 var(--compare-pos, 50%));
+}
+
+.compare--ready .compare-pane img,
+.compare--ready .compare-pane picture,
+.compare--ready .compare-pane .frame-pending {
+    border-radius: 0;
+    height: 100%;
+}
+
+/* In the upgrade the labels become corner badges rather than captions. */
+.compare--ready .compare-pane-label {
+    position: absolute;
+    bottom: 0.75rem;
+    margin: 0;
+    padding: 0.3rem 0.7rem;
+    border-radius: 6px;
+    background: rgba(18, 18, 26, 0.72);
+    color: var(--warm-white);
+    pointer-events: none;
+}
+
+.compare--ready .compare-pane[data-compare-pane="before"] .compare-pane-label {
+    left: 0.75rem;
+}
+
+.compare--ready .compare-pane[data-compare-pane="after"] .compare-pane-label {
+    right: 0.75rem;
+}
+
+.compare-divider {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: var(--compare-pos, 50%);
+    width: 2px;
+    margin-left: -1px;
+    background: var(--warm-gold);
+    pointer-events: none;
+}
+
+.compare-divider::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 38px;
+    height: 38px;
+    transform: translate(-50%, -50%);
+    border: 2px solid var(--warm-gold);
+    border-radius: 50%;
+    background: rgba(18, 18, 26, 0.55);
+    box-shadow: 0 0 18px var(--gold-glow-strong);
+}
+
+/* The control covers the whole image so it can be dragged anywhere, and
+   because it is a real range input it also works from the keyboard and
+   announces itself to a screen reader. */
+.compare-range {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    opacity: 0;
+    cursor: ew-resize;
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+}
+
+.compare-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 44px;
+    height: 44px;
+}
+
+.compare-range::-moz-range-thumb {
+    width: 44px;
+    height: 44px;
+    border: 0;
+    opacity: 0;
+}
+
+/* The input itself is invisible, so focus has to show on the divider. */
+.compare-range:focus-visible ~ .compare-divider,
+.compare-stack:focus-within .compare-divider {
+    outline: 2px solid var(--warm-white);
+    outline-offset: 2px;
+}
+
+/* Only true once the slider exists, so it only appears then. */
+.compare-hint {
+    display: none;
+}
+
+.compare--ready .compare-hint {
+    display: inline;
+}
+
+/* --------------------------------------------------------------------------
+   Devlog entry list
+   -------------------------------------------------------------------------- */
+
+.entry-list {
+    list-style: none;
+    display: grid;
+    gap: 1.25rem;
+    margin-top: 2.5rem;
+}
+
+.entry-meta {
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 0.5rem;
+}
+
+/* Gold, and the doubled selector is what keeps it that way: .card h2 sets
+   warm white at (0,1,1), which outranks a bare .entry-title at (0,1,0)
+   regardless of source order. Listing .card .entry-title raises this to
+   (0,2,0) so it wins.
+
+   It has to win. Plain card titles are warm white; these cards are LINKS,
+   and gold is the link colour — the gold is carrying meaning here rather
+   than decorating. See the note on .card h2.
+
+   The tag cannot be relied on either: .entry-title is an h2 on /devlog/ and
+   an h3 in the product page's devlog strip. */
+.card .entry-title,
+.entry-title {
+    font-size: 1.25rem;
+    color: var(--warm-gold);
+    font-weight: 500;
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    line-height: 1.3;
+}
+
+.entry-summary {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    margin-bottom: 0;
+    max-width: var(--measure);
+}
+
+.entry-header {
+    margin-bottom: 2.5rem;
+}
+
+/* The email address on the contact page, under each intent. */
+.contact-route {
+    margin-top: 1rem;
+    margin-bottom: 0;
+    font-size: 0.95rem;
+    word-break: break-word;
+}
+
+.entry-date {
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 0.75rem;
+}
+
+/* The snapshot convention: every entry is a dated log and says when its
+   figures were checked, so it stays correct as the tool moves on. */
+.verified-note {
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    border-left: 2px solid var(--rule);
+    padding-left: 0.9rem;
+    margin-block: 2rem;
+}
+
+/* --------------------------------------------------------------------------
+   Footer
+   -------------------------------------------------------------------------- */
+
+/* Solid Charcoal over a --rule border. It was rgba(26,26,34,0.5) over Void
+   with a 0.1-alpha border, which is a 4-point luminance difference and a
+   line you cannot see — the footer did not read as a footer, it read as
+   nine pills floating at the end of the page. */
+.site-footer {
+    position: relative;
+    z-index: 1;
+    flex-shrink: 0;
+    margin-top: 4rem;
+    border-top: 1px solid var(--rule);
+    background: var(--charcoal);
+    padding-block: 3rem;
+}
+
+/* Contact is the one link a paying customer needs, and in the social row it
+   was ninth of nine identical pills. Promoted out of the row to the site's
+   own primary-action component. */
+.footer-contact {
+    margin-bottom: 1.75rem;
+}
+
+.footer-tagline {
+    font-family: 'DM Sans', 'Inter', 'Segoe UI', sans-serif;
+    font-style: italic;
+    color: var(--text-muted);
+    margin-bottom: 1.75rem;
+}
+
+.follow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-bottom: 2rem;
+}
+
+/* Void, not Charcoal. These pills were Charcoal on a half-alpha Charcoal
+   footer; now that the footer is solid Charcoal that would be pill-coloured
+   pills on a pill-coloured background, leaving only a 0.1-alpha border to
+   separate them. Inverting them against the raised footer keeps the
+   distinction the surface change would otherwise have eaten. */
+.follow a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.55rem 0.9rem;
+    background: var(--void);
+    border: 1px solid var(--rule-faint);
+    border-radius: 8px;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: border-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+}
+
+/* ORDER IS LOAD-BEARING — :active must stay below :hover, both (0,2,1). */
+@media (hover: hover) {
+    .follow a:hover {
+        border-color: var(--rule-strong);
+        color: var(--warm-white);
+        transform: translateY(-1px);
+    }
+}
+
+.follow a:active {
+    transform: translateY(0);
+}
+
+.follow svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    fill: currentColor;
+    opacity: 0.8;
+}
+
+@media (hover: hover) {
+    .follow a:hover svg {
+        fill: var(--warm-gold);
+        opacity: 1;
+    }
+}
+
+/* 0.55 alpha = 5.43:1 on Void, WCAG AA. The original 0.2 was 1.75:1. */
+.footer-legal {
+    font-size: 0.78rem;
+    letter-spacing: 0.05em;
+    color: var(--text-dim);
+    margin-bottom: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 640px) {
+    .site-header .wrap {
+        padding-block: 1rem;
+    }
+
+    .site-nav {
+        gap: 1.25rem;
+        font-size: 0.88rem;
+        width: 100%;
+    }
+
+    section {
+        padding-block: 2.5rem;
+    }
+
+    .follow a {
+        font-size: 0.8rem;
+        padding: 0.5rem 0.75rem;
+    }
+
+    .prose .bleed {
+        width: 100%;
+        margin-left: 0;
+    }
+
+    /* Below about 337px (320px phones) the wordmark wraps to two lines, and
+       1.45 leading made the two halves read as two separate things rather
+       than one name. */
+    .wordmark {
+        line-height: 1.25;
+    }
+}
+
+/* The two hero buttons measured 153px and 185px, stacked and left-aligned —
+   two different widths in a column reads as untidy rather than deliberate.
+   Full width with the arrow pushed to the far edge gives them one shape and
+   puts the affordance where a thumb already is. */
+@media (max-width: 480px) {
+    .button-row .btn {
+        width: 100%;
+        justify-content: space-between;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   Motion
+   -------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   Documentation
+
+   Used only by /geomancer/docs/ and /geomancer/changelog/. Docs are reference
+   material rather than pitch, so they need three things the rest of the site
+   does not: a contents rail, real tables, and inline code. Everything below
+   is built from the existing tokens — no new colours, no new fonts.
+
+   The docs measure is wider than --measure. Prose wants 68ch; a settings
+   table with a Default column does not fit in it, and wrapping every cell to
+   two lines is worse than a slightly wider column.
+   -------------------------------------------------------------------------- */
+
+/* Breadcrumb — docs sit two levels down, so the way back needs saying. */
+.breadcrumb {
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 1.25rem;
+}
+
+.breadcrumb a {
+    color: var(--text-muted);
+    text-decoration: none;
+    border-bottom: 1px solid var(--rule);
+}
+
+@media (hover: hover) {
+    .breadcrumb a:hover {
+        color: var(--warm-gold);
+        border-bottom-color: var(--rule-strong);
+    }
+}
+
+/* The "/" between crumbs. This was --rule-strong, which is a BORDER tint
+   (rgba(201,150,60,0.35)) being used for text: 1.89:1 on Void, failing both
+   the 4.5:1 text floor and the 3:1 non-text floor. --text-dim is the lowest
+   step of the text ladder that clears AA, and the separators also carry
+   aria-hidden in the markup so a screen reader does not read "slash".
+   Border tints are for borders — they are not on the text ladder. */
+.breadcrumb span {
+    margin-inline: 0.5rem;
+    color: var(--text-dim);
+}
+
+/* Section switcher across the docs set. */
+/* margin-top is 0: the hero above already supplies the space, and its own
+   padding plus this margin was part of the 146px first gap on docs pages. */
+.doc-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-block: 0 2rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--rule-faint);
+    list-style: none;
+}
+
+.doc-nav a {
+    display: inline-block;
+    padding: 0.45rem 0.95rem;
+    border-radius: 999px;
+    border: 1px solid var(--rule-faint);
+    background: var(--charcoal);
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.88rem;
+    transition: border-color 0.3s ease, color 0.3s ease;
+}
+
+/* ORDER IS LOAD-BEARING, same as the site nav: :hover and
+   [aria-current="page"] are both (0,2,1) and only source order separates
+   them. This is no longer theoretical — the current pill now carries a
+   background the hover state does not, so swapping these two would make the
+   hovered pill impersonate the current one. Keep the current-state rule
+   last. Before the background existed, both rules declared identical values
+   and a hovered pill was indistinguishable from the current page. */
+@media (hover: hover) {
+    .doc-nav a:hover {
+        border-color: var(--rule-strong);
+        color: var(--warm-gold);
+    }
+}
+
+.doc-nav a[aria-current="page"] {
+    border-color: var(--rule-strong);
+    color: var(--warm-gold);
+    background: rgba(201, 150, 60, 0.10);
+}
+
+/* The version stamp. Same convention as a devlog entry: a docs page states
+   which release it describes and when it was checked, so an archived copy
+   stays correct instead of going quietly wrong. */
+.doc-version {
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 0.75rem;
+}
+
+/* Shown only on archived versions under /docs/<n>/. */
+.doc-archived {
+    border: 1px solid var(--rule-strong);
+    border-radius: 10px;
+    background: rgba(201, 150, 60, 0.06);
+    padding: 1rem 1.25rem;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-block: 1.5rem;
+}
+
+.doc-archived strong {
+    color: var(--warm-gold);
+}
+
+/* Contents rail beside the body on wide screens, above it on narrow. */
+.doc-layout {
+    display: grid;
+    gap: 2.5rem;
+    grid-template-columns: 1fr;
+    align-items: start;
+}
+
+@media (min-width: 940px) {
+    .doc-layout {
+        grid-template-columns: 200px 1fr;
+        gap: 3.5rem;
+    }
+
+    .doc-toc {
+        position: sticky;
+        top: 2rem;
+    }
+}
+
+.doc-toc h2 {
+    font-size: 0.78rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--warm-gold);
+    margin: 0 0 1rem;
+}
+
+.doc-toc ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-left: 1px solid var(--rule-faint);
+}
+
+.doc-toc li {
+    margin: 0;
+}
+
+.doc-toc a {
+    display: block;
+    padding: 0.4rem 0 0.4rem 0.9rem;
+    margin-left: -1px;
+    border-left: 1px solid transparent;
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    line-height: 1.4;
+}
+
+@media (hover: hover) {
+    .doc-toc a:hover {
+        color: var(--warm-gold);
+        border-left-color: var(--rule-strong);
+    }
+}
+
+/* Below the two-column breakpoint the rail has no column to sit in, and as a
+   full-width list with a hairline left border it cost ~250px of vertical
+   furniture and read as a stray line. Reuse the .doc-nav pill pattern rather
+   than introduce a second layout for the same job. */
+@media (max-width: 939px) {
+    .doc-toc ol {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        border-left: 0;
+    }
+
+    .doc-toc a {
+        padding: 0.35rem 0.8rem;
+        margin-left: 0;          /* the rail's -1px hairline offset, undone */
+        border: 1px solid var(--rule-faint);
+        border-radius: 999px;
+        background: var(--charcoal);
+    }
+}
+
+/* The CONTAINER stays wide — 78ch exists so the settings tables fit, and
+   wrapping every cell to two lines is worse than a wider column. The prose
+   inside it is narrowed instead, below. Do not narrow this. */
+.doc-body {
+    max-width: 78ch;
+    min-width: 0;
+}
+
+/* Prose children only, so tables, figures and callouts keep the full width.
+   Measured before this: 796px at ~119 characters per line.
+
+   One measure, not two. An earlier pass gave the docs their own 58ch on the
+   grounds that reference material can run wider — but it bought about five
+   characters of difference for the cost of a second magic number, and
+   --measure already lands at the ~75 that is the target. */
+.doc-body > p,
+.doc-body > ul,
+.doc-body > ol {
+    max-width: var(--measure);
+}
+
+/* Anchored headings must not land under the sticky rail. */
+.doc-body h2,
+.doc-body h3 {
+    scroll-margin-top: 2rem;
+}
+
+.doc-body h2 {
+    padding-top: 1rem;
+    border-top: 1px solid var(--rule-faint);
+}
+
+/* ORDER IS LOAD-BEARING for the two rules below — both (0,2,1), so the
+   :first-child override wins on position alone.
+
+   The first h2 has no hairline rule above it, which means it needs MORE
+   space than the ones that do, not less. It was 1rem against their 3rem. */
+.doc-body h2:first-of-type {
+    padding-top: 0;
+    border-top: 0;
+    margin-top: 2.5rem;
+}
+
+/* Except where an h2 opens .doc-body outright, with nothing above it to be
+   separated from. No page does that today — /geomancer/changelog/ did until
+   it gained its .doc-version stamp — so this rule is what makes leading with
+   an h2 safe rather than something it fixes right now. */
+.doc-body > h2:first-child {
+    margin-top: 0;
+}
+
+/* Third-level headings in the docs were 18.4px/500/warm-white with no top
+   margin, against a <strong> at 16px/500/warm-white — on a long reference
+   page the third level of hierarchy had effectively vanished. Small-caps in
+   gold is the same treatment as .eyebrow and .callout-label, so it reads as
+   the existing family rather than a new idea.
+
+   SCOPED TO .doc-body deliberately: a global h3 change breaks .card h3. */
+.doc-body h3 {
+    margin-top: 2.25rem;
+    font-size: 1.05rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--warm-gold);
+}
+
+.doc-body ul,
+.doc-body ol {
+    margin: 0 0 1.5rem 1.1rem;
+}
+
+.doc-body li {
+    margin-bottom: 0.7rem;
+    padding-left: 0.3rem;
+    color: var(--text-muted);
+}
+
+.doc-body li::marker {
+    color: var(--warm-gold);
+}
+
+.doc-body p {
+    color: var(--text-muted);
+}
+
+.doc-body p strong,
+.doc-body li strong {
+    color: var(--warm-white);
+}
+
+/* Inline code. The .pending rule already styles code inside that banner;
+   this is the same treatment everywhere else. */
+.doc-body code,
+.callout code,
+td code,
+th code {
+    font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace;
+    font-size: 0.88em;
+    color: var(--warm-gold);
+    background: rgba(201, 150, 60, 0.07);
+    border-radius: 4px;
+    /* 0.4em left ~6px of air before a following full stop, visible about a
+       dozen times across the docs. */
+    padding: 0.12em 0.3em;
+}
+
+/* Callouts. Two flavours only — a note and a warning — because a third
+   would need a third colour and the palette has no room for one. The label
+   carries the meaning, so nothing depends on colour alone. */
+.callout {
+    border: 1px solid var(--rule);
+    border-left-width: 3px;
+    border-radius: 8px;
+    background: var(--charcoal);
+    padding: 1.15rem 1.3rem;
+    margin-block: 1.75rem;
+}
+
+.callout p:last-child {
+    margin-bottom: 0;
+}
+
+.callout-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--warm-gold);
+    margin-bottom: 0.5rem;
+}
+
+.callout--warn {
+    border-left-color: var(--danger);
+    background: rgba(226, 128, 121, 0.06);
+}
+
+.callout--warn .callout-label {
+    color: var(--warm-white);
+}
+
+.callout--warn .callout-label::before {
+    content: '\25C6';
+    color: var(--danger);
+    margin-right: 0.5rem;
+}
+
+/* Tables. Horizontally scrollable on narrow screens rather than crushed —
+   the wrapper is focusable so the scroll is reachable from the keyboard. */
+.table-wrap {
+    overflow-x: auto;
+    margin-block: 1.75rem;
+    border: 1px solid var(--rule-faint);
+    border-radius: 10px;
+}
+
+.table-wrap:focus-visible {
+    outline: 2px solid var(--warm-gold);
+    outline-offset: 2px;
+}
+
+.table-wrap table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.92rem;
+    min-width: 34rem;
+}
+
+.table-wrap caption {
+    text-align: left;
+    /* The 0 bottom put the caption flush against the header row — measured
+       0px between them. */
+    padding: 1rem 1.15rem 0.8rem;
+    font-size: 0.78rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--warm-gold);
+}
+
+.table-wrap th {
+    text-align: left;
+    font-weight: 500;
+    color: var(--warm-white);
+    background: var(--charcoal);
+    padding: 0.85rem 1.15rem;
+    border-bottom: 1px solid var(--rule);
+    white-space: nowrap;
+}
+
+.table-wrap td {
+    padding: 0.85rem 1.15rem;
+    border-bottom: 1px solid var(--rule-faint);
+    color: var(--text-muted);
+    vertical-align: top;
+}
+
+.table-wrap tr:last-child td {
+    border-bottom: 0;
+}
+
+.table-wrap td:first-child {
+    color: var(--warm-white);
+    white-space: nowrap;
+}
+
+/* Below 720px the 34rem floor forces a horizontal scroll against a 342px
+   content width, and the Notes column sliced mid-word ("How...", "Coar...").
+   Nothing indicated it scrolled, so it read as broken rather than
+   scrollable — and an inset shadow cue does not work here because the th/td
+   backgrounds paint over it. Remove the need to scroll instead of
+   advertising it. Must stay below the base table rules: the overrides here
+   match their specificity and win on order. */
+@media (max-width: 720px) {
+    .table-wrap table {
+        min-width: 0;
+        font-size: 0.85rem;
+    }
+
+    .table-wrap th,
+    .table-wrap td,
+    .table-wrap td:first-child {
+        padding: 0.65rem 0.75rem;
+        white-space: normal;
+    }
+
+    .table-wrap caption {
+        padding-inline: 0.75rem;
+    }
+}
+
+/* The bug-report template. Its canonical home is here — the Discord pin and
+   the store listing both link to this, rather than each keeping a copy. */
+.field-list {
+    list-style: none;
+    margin: 1.75rem 0;
+    padding: 1.4rem 1.5rem;
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    background: var(--charcoal);
+}
+
+.field-list li {
+    margin-bottom: 0.75rem;
+    padding-left: 0;
+    color: var(--text-muted);
+    font-size: 0.94rem;
+}
+
+.field-list li:last-child {
+    margin-bottom: 0;
+}
+
+.field-list strong {
+    color: var(--warm-white);
+    font-weight: 500;
+}
+
+/* Release history. Empty until 1.0 ships, and it says so rather than
+   pretending otherwise. */
+.release-list {
+    list-style: none;
+    margin: 2rem 0 0;
+    padding: 0;
+}
+
+.release-list > li {
+    border-left: 2px solid var(--rule);
+    padding: 0 0 2rem 1.5rem;
+    margin: 0;
+}
+
+.release-list > li:last-child {
+    padding-bottom: 0;
+}
+
+.release-version {
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--warm-gold);
+    margin-bottom: 0.5rem;
+}
+
+/* --------------------------------------------------------------------------
+   Print
+
+   People print and PDF reference documentation, and a dark-themed page
+   prints as either a solid block of ink or as pale grey on white. This is
+   the one place the "never pure black, never pure white" rule bends
+   legitimately: the rule protects screen surfaces from glare, and paper is
+   already white. Ink is set to near-black rather than #000 so it stays a
+   deliberate colour rather than a default.
+
+   Navigation, the footer and the contents rail are all routes, and a route
+   on paper is dead weight. External link targets are printed after the link
+   text, because a URL a reader cannot click is only useful if they can read
+   and type it.
+   -------------------------------------------------------------------------- */
+
+@media print {
+    /* The noise overlay and the gold glow are both decorative and both would
+       otherwise render as a grey wash across every page. */
+    body::before,
+    body::after {
+        display: none !important;
+    }
+
+    html, body {
+        background: #fff;
+        color: #1a1a1a;
+    }
+
+    body {
+        font-size: 11pt;
+        line-height: 1.45;
+    }
+
+    .site-header,
+    .site-footer,
+    .doc-toc,
+    .doc-nav,
+    .skip-link,
+    .compare-range,
+    .compare-divider,
+    .compare-hint,
+    .button-row {
+        display: none;
+    }
+
+    h1, h2, h3,
+    .eyebrow,
+    .callout-label,
+    .table-wrap caption,
+    .entry-title,
+    .release-version,
+    .doc-body h3 {
+        color: #6b4a12;
+    }
+
+    p, li, td, th,
+    .lede, .doc-body p, .doc-body li,
+    figcaption, .entry-summary, .doc-version, .verified-note {
+        color: #1a1a1a;
+    }
+
+    /* Full measure on paper — the column width was chosen for a screen the
+       reader can sit back from. */
+    .wrap { max-width: none; padding-inline: 0; }
+    .prose, .lede, .doc-body,
+    .doc-body > p, .doc-body > ul, .doc-body > ol { max-width: none; }
+    .doc-layout { display: block; }
+
+    section { padding-block: 1rem; }
+    .hero { padding-block: 0 1rem; }
+
+    /* Surfaces that were dark cards become outlined blocks. */
+    .card, .callout, .field-list, .frame-pending, .table-wrap {
+        background: transparent;
+        border: 1px solid #bbb;
+    }
+
+    .table-wrap { overflow-x: visible; }
+    .table-wrap table { min-width: 0; }
+    .table-wrap th { background: #f2f2f2; color: #1a1a1a; }
+    .table-wrap th, .table-wrap td { border-bottom: 1px solid #ddd; }
+
+    .doc-body code, .callout code, td code, th code, .pending code {
+        background: #f2f2f2;
+        color: #6b4a12;
+        border: 1px solid #e0e0e0;
+    }
+
+    /* The .pending banner must survive printing. If a draft page is printed
+       and circulated, the thing that says "not published" has to come with
+       it — that is the entire job of this banner. */
+    .pending {
+        background: transparent;
+        border: 2px dashed #8B1E2F;
+    }
+
+    .pending-label { color: #8B1E2F; }
+
+    /* Print the destination of external links only. Internal ones resolve to
+       paths a reader has no way to use, and mailto: already shows the
+       address in the link text on the contact page. */
+    a[href^="http"]::after {
+        content: " <" attr(href) ">";
+        font-size: 0.85em;
+        word-break: break-all;
+    }
+
+    a { text-decoration: underline; }
+
+    /* Do not split a heading from what it introduces, or a figure from its
+       caption. */
+    h1, h2, h3 { break-after: avoid; page-break-after: avoid; }
+    figure, .table-wrap, .callout { break-inside: avoid; page-break-inside: avoid; }
+    img { max-width: 100% !important; }
+}

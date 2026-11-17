@@ -1,0 +1,24 @@
+# Raw capture PNGs never enter this repository.
+# The committed web set (WebP + JPEG) is derived from them by
+# tools/derive-shots.py — see README.md. The source captures live in the
+# studio marketing folder, outside this repo.
+assets/shots/**/*.png
+assets/shots/_raw/
+
+# Local path to the capture folder. This repository is public, so the
+# studio's folder layout stays out of it.
+tools/source-path.txt
+
+# Local tooling config. Never belongs in a public repository.
+.claude/
+
+# Python bytecode cache. Importing tools/derive-shots.py leaves one behind,
+# and it embeds an absolute local path.
+__pycache__/
+
+# OS and editor cruft
+Thumbs.db
+desktop.ini
+.DS_Store
+*.swp
+*~
