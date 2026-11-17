@@ -165,6 +165,10 @@
 html {
     scroll-behavior: smooth;
     -webkit-text-size-adjust: 100%;
+    /* Keeps body's overflow on body. With html left at visible, body's
+       overflow-x was handed to the viewport, body itself clipped nothing,
+       and the glow below (up to 160vw wide) widened every phone page. */
+    overflow-x: clip;
 }
 
 body {
@@ -177,7 +181,11 @@ body {
     display: flex;
     flex-direction: column;
     position: relative;
+    /* The glow stops at body's edges. clip, not hidden: hidden would make
+       body a scroll container and break the docs' sticky rail. hidden
+       stays first as the fallback for browsers without clip. */
     overflow-x: hidden;
+    overflow-x: clip;
 }
 
 /* Subtle noise texture overlay — carried over from the one-pager. */
