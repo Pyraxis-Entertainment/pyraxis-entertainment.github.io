@@ -1947,3 +1947,614 @@ th code {
     figure, .table-wrap, .callout { break-inside: avoid; page-break-inside: avoid; }
     img { max-width: 100% !important; }
 }
+
+/* ==========================================================================
+   WIDE SCREEN AND HORIZON  (every page; the next block builds on it)
+
+   Appended at the end of the file ON PURPOSE. Nearly every selector in this
+   stylesheet is a single class, so ties are settled by source order (see the
+   note at the top). Everything here is meant to win those ties, and the
+   wide-screen rules sit inside min-width queries so they never meet the
+   max-width phone rules above.
+
+   Four ideas, nothing else:
+     1. The page scales up on big monitors instead of sitting at laptop size.
+     2. The hero is a full-bleed band: the world's edge runs the whole width
+        of the screen with first light at its crest. This is the studio's
+        horizon — it replaces the round glow that sat behind the header.
+     3. Sections use two columns once there is room, so the right half of
+        the column is no longer empty.
+     4. The footer spreads out to match.
+
+   No new colours: every value below is Void, Charcoal, Warm Gold or Warm
+   White, or an alpha tint of one of them.
+   ========================================================================== */
+
+:root {
+    /* Was 1100px. In rem so it grows with the root size below. */
+    --page: 80rem;
+    /* Side padding of .wrap. 1.5rem (the old fixed value) on phones. */
+    --gutter: clamp(1.5rem, 4vw, 4rem);
+
+    /* The horizon. --hz-r is the radius of the world; --hz-sag is how far
+       its edge has fallen by the time it reaches the side of the screen
+       (worked out from the radius, so change them together). */
+    --hz-r: 300vw;
+    --hz-x: 50%;
+    --hz-sag: 4.2vw;
+    --hz-rim: clamp(5px, 0.42vw, 12px);
+    --hz-light: rgba(201, 150, 60, 0.24);
+    --hz-line: rgba(201, 150, 60, 0.38);
+}
+
+/* 1. Scale. 16px up to a 1600px window, then growing to 22px at 2800px.
+   Everything sized in rem or ch follows: type, spacing, the page width and
+   the prose measure, so a line of prose holds the same ~75 characters at
+   every size. The 100% floor keeps a reader's own font-size setting. */
+html {
+    font-size: clamp(100%, 50% + 0.5vw, 137.5%);
+}
+
+.wrap {
+    padding-inline: var(--gutter);
+}
+
+/* The few fixed-pixel pieces that would otherwise stay laptop-sized. */
+@media (min-width: 1600px) {
+    .brand-mark {
+        width: 2.4rem;
+        height: 2.4rem;
+        border-radius: 0.55rem;
+    }
+
+    .brand-mark svg {
+        width: 1.4rem;
+        height: 1.4rem;
+    }
+
+    .hero-mark {
+        width: 4.75rem;
+        height: 4.75rem;
+        border-radius: 1rem;
+    }
+
+    .hero-mark svg {
+        width: 2.75rem;
+        height: 2.75rem;
+    }
+
+    .follow svg {
+        width: 1rem;
+        height: 1rem;
+    }
+}
+
+/* 2. The horizon hero.
+
+   The old glow (body::after, a 900px disc behind the header) is retired:
+   the light now comes from one place, the crest of the horizon. The
+   overflow rules on html and body stay exactly as they were. */
+body::after {
+    display: none;
+}
+
+.hero {
+    position: relative;
+    /* Nothing drawn for the horizon can widen the page: it is clipped to
+       the hero. hidden first for browsers without clip, as on body. */
+    overflow: hidden;
+    overflow: clip;
+    --hz-y: calc(100% - var(--hz-sag) - 1.25rem);
+    padding-bottom: calc(var(--hz-sag) + clamp(4.75rem, 8vw, 8rem));
+}
+
+.hero > .wrap {
+    position: relative;
+    z-index: 1;
+}
+
+.hero::before,
+.hero::after,
+.hero-ground::before,
+.hero-ground::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+/* First light: a thin bright rim hugging the world's edge and a soft wash
+   above it, both faded out sideways by the mask so the light belongs to the
+   crest. The wash peaks at 0.24 alpha; Warm Gold text over that peak is
+   still 4.8:1, and no text sits there anyway. */
+.hero::before,
+.hero-ground::before {
+    background:
+        radial-gradient(circle calc(var(--hz-r) + var(--hz-rim)) at var(--hz-x) calc(var(--hz-y) + var(--hz-r)),
+            transparent calc(100% - var(--hz-rim)),
+            rgba(201, 150, 60, 0.95) calc(100% - var(--hz-rim) + 0.5px),
+            rgba(201, 150, 60, 0) 100%),
+        radial-gradient(ellipse 46vw 24vw at var(--hz-x) var(--hz-y),
+            var(--hz-light), transparent 72%);
+    -webkit-mask-image: radial-gradient(ellipse 42vw 30vw at var(--hz-x) var(--hz-y), var(--void) 20%, transparent 100%);
+    mask-image: radial-gradient(ellipse 42vw 30vw at var(--hz-x) var(--hz-y), var(--void) 20%, transparent 100%);
+}
+
+/* The world: a Void disc far larger than the screen, so only its upper edge
+   shows. It hides the lower half of the light, which is what makes the
+   light read as coming from behind it. */
+.hero::after,
+.hero-ground::after {
+    background:
+        radial-gradient(circle var(--hz-r) at var(--hz-x) calc(var(--hz-y) + var(--hz-r)),
+            var(--void) calc(100% - 1.5px),
+            var(--hz-line) calc(100% - 0.5px),
+            rgba(201, 150, 60, 0) 100%);
+}
+
+/* A held-back page that zeroes the hero's bottom padding has no room for
+   the horizon, so it does not get one. */
+.hero.section-hero-flush::before,
+.hero.section-hero-flush::after {
+    display: none;
+}
+
+/* A page that is only a hero (the coming-soon pages): the hero takes the
+   whole space above the footer and the horizon sits at the bottom of it,
+   instead of a short block over an empty screen. */
+.main-solo {
+    display: flex;
+    flex-direction: column;
+}
+
+.main-solo > .hero {
+    flex: 1 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* The home hero in two columns once there is room: the name on the left,
+   what the studio is and where to go on the right. Same words, same order
+   in the HTML. */
+@media (min-width: 1100px) {
+    .hero-cols {
+        display: grid;
+        grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+        column-gap: clamp(3rem, 6vw, 7rem);
+        align-items: end;
+    }
+
+    .hero-cols .rule {
+        display: none;
+    }
+
+    .hero-cols .tagline {
+        margin-bottom: 0;
+    }
+
+    .hero-cols .wordmark {
+        /* One line: the name is about 18em long with its tracking. */
+        font-size: clamp(1.5rem, 2.05vw, 1.75rem);
+    }
+
+    .hero-cols .button-row {
+        margin-top: 1.75rem;
+    }
+}
+
+/* 3. Sections in two columns: the heading on the left, the text on the
+   right at the prose measure. */
+@media (min-width: 900px) {
+    .split-head {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, var(--measure));
+        column-gap: clamp(2.5rem, 5vw, 6rem);
+        align-items: start;
+    }
+
+    .split-head h2 {
+        font-size: clamp(1.9rem, 3vw, 2.6rem);
+        margin-bottom: 0;
+        max-width: 14em;
+    }
+
+    .split-head > :last-child > :last-child {
+        margin-bottom: 0;
+    }
+
+    .split-head .button-row {
+        margin-top: 1.75rem;
+    }
+}
+
+/* The Geomancer picture gets the larger share of its row. */
+@media (min-width: 1100px) {
+    .split--wide {
+        grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+        gap: clamp(3.5rem, 5vw, 6rem);
+    }
+}
+
+/* 4. Footer: tagline and contact on the left, the follow links on the
+   right, the legal line beneath both. */
+@media (min-width: 900px) {
+    .site-footer .wrap {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 36rem);
+        grid-template-areas:
+            "tagline follow"
+            "contact follow"
+            "legal   legal";
+        column-gap: clamp(2.5rem, 5vw, 6rem);
+        align-items: start;
+    }
+
+    .footer-tagline { grid-area: tagline; }
+    .footer-contact { grid-area: contact; }
+    .footer-legal { grid-area: legal; }
+
+    .follow {
+        grid-area: follow;
+        justify-content: flex-end;
+    }
+}
+
+@media print {
+    .hero::before,
+    .hero::after,
+    .hero-ground::before,
+    .hero-ground::after {
+        display: none !important;
+    }
+}
+
+/* ==========================================================================
+   THE DAWN HOME PAGE
+
+   Builds on the block above (scale, horizon, two-column sections, footer).
+   Adds, for the home page:
+     - the dawn hero: the brand's stacked lockup, centred, standing on the
+       world's edge with first light behind it
+     - display-size section headings
+     - the Geomancer picture running off the right edge of the screen
+     - the devlog invitation as a raised panel
+     - one piece of motion, CSS only, off under reduced motion: the light
+       rising once on load
+   Still palette-only, DM Sans for all text, Cinzel for the name alone.
+   ========================================================================== */
+
+/* --- The dawn hero ------------------------------------------------------- */
+
+.hero--dawn {
+    display: grid;
+    grid-template-rows: 1fr auto;
+    /* One screen tall, less the header, so the horizon is the first thing
+       seen; capped so a very tall window does not strand the name. vh first
+       for browsers without svh. */
+    min-height: min(calc(100vh - 5.5rem), 64rem);
+    min-height: min(calc(100svh - 5.5rem), 64rem);
+    padding: 0;
+    text-align: center;
+}
+
+/* This hero's horizon belongs to .hero-ground, where the crest can sit
+   exactly under the name whatever the text above and below it measures. */
+.hero--dawn::before,
+.hero--dawn::after {
+    display: none;
+}
+
+.hero--dawn > .hero-sky {
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    padding-top: clamp(3rem, 8vh, 6rem);
+    padding-bottom: clamp(1.9rem, 3.2vw, 3.4rem);
+}
+
+.hero-ground {
+    position: relative;
+    /* The same curve as the horizon in the mark: its edge falls about a
+       ninth of its width, so the radius is 1.2 screens. */
+    --hz-r: 120vw;
+    --hz-x: 50%;
+    --hz-sag: 10.9vw;
+    --hz-up: max(36vw, 18rem);
+    --hz-y: var(--hz-up);
+    --hz-light: rgba(201, 150, 60, 0.26);
+    padding-top: clamp(2.75rem, 5vw, 5rem);
+    padding-bottom: clamp(3.5rem, 6vw, 6.5rem);
+}
+
+/* The light reaches up behind the name, so these two layers start above
+   the ground's own box. The hero clips them. */
+.hero-ground::before,
+.hero-ground::after {
+    inset: calc(-1 * var(--hz-up)) 0 0 0;
+}
+
+.hero-ground::before {
+    background:
+        radial-gradient(circle calc(var(--hz-r) + var(--hz-rim)) at var(--hz-x) calc(var(--hz-y) + var(--hz-r)),
+            transparent calc(100% - var(--hz-rim)),
+            rgba(201, 150, 60, 0.95) calc(100% - var(--hz-rim) + 0.5px),
+            rgba(201, 150, 60, 0) 100%),
+        radial-gradient(ellipse max(58vw, 26rem) max(30vw, 15rem) at var(--hz-x) var(--hz-y),
+            var(--hz-light), transparent 72%);
+    -webkit-mask-image: radial-gradient(ellipse max(52vw, 24rem) max(36vw, 18rem) at var(--hz-x) var(--hz-y), var(--void) 18%, transparent 100%);
+    mask-image: radial-gradient(ellipse max(52vw, 24rem) max(36vw, 18rem) at var(--hz-x) var(--hz-y), var(--void) 18%, transparent 100%);
+}
+
+.hero-ground > .wrap {
+    position: relative;
+    z-index: 1;
+}
+
+/* The mark on its own, without the tile: the brand's stacked lockup is the
+   mark above the name. Same inline SVG, same two paths. */
+.hero-mark--bare {
+    width: clamp(3.5rem, 6vw, 6.5rem);
+    height: clamp(3.5rem, 6vw, 6.5rem);
+    border: 0;
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+    margin-bottom: clamp(1.1rem, 2vw, 2.2rem);
+}
+
+.hero-mark--bare svg {
+    width: 100%;
+    height: 100%;
+}
+
+/* The stacked lockup, set as the brand guide gives it: AURELIAN in Warm
+   Gold at 0.10em; ENTERTAINMENT in Warm White at 0.3x the size, tracked
+   0.42em. The indent equals the tracking, which otherwise hangs off the
+   last letter and pulls a centred line to the left. */
+.lockup {
+    font-size: clamp(2.6rem, 11.5vw, 9rem);
+    line-height: 1;
+    letter-spacing: 0.1em;
+    margin-bottom: 0;
+}
+
+.lockup-name,
+.lockup-sub {
+    display: block;
+}
+
+.lockup-name {
+    text-indent: 0.1em;
+}
+
+.lockup-sub {
+    font-size: 0.3em;
+    letter-spacing: 0.42em;
+    text-indent: 0.42em;
+    color: var(--warm-white);
+    margin-top: 0.85em;
+}
+
+/* The tagline as display type: tracked DM Sans capitals, no full stop
+   (brand guide, "Tagline"). The stop stays in the HTML and is hidden here,
+   so the sentence itself is untouched. */
+.tagline--display {
+    font-style: normal;
+    font-weight: 500;
+    font-size: clamp(0.72rem, 0.95vw, 0.82rem);
+    letter-spacing: 0.3em;
+    text-indent: 0.3em;
+    text-transform: uppercase;
+    color: var(--warm-white);
+    margin-bottom: clamp(1.25rem, 2vw, 2rem);
+    /* If it has to break on a phone, break it evenly, not one word short. */
+    text-wrap: balance;
+}
+
+@media (max-width: 480px) {
+    .tagline--display {
+        letter-spacing: 0.22em;
+        text-indent: 0.22em;
+    }
+}
+
+.tagline-stop {
+    display: none;
+}
+
+.hero-ground .lede {
+    margin-inline: auto;
+}
+
+.hero-ground .button-row {
+    justify-content: center;
+}
+
+@media (min-width: 481px) {
+    .hero-ground .btn {
+        padding: 0.9rem 1.6rem;
+        font-size: 1rem;
+    }
+}
+
+/* The header sits on the hero's sky here, so its hairline goes. */
+.site-header--over {
+    border-bottom-color: transparent;
+}
+
+/* --- Sections ------------------------------------------------------------ */
+
+@media (min-width: 900px) {
+    section {
+        padding-block: clamp(3.5rem, 6vw, 7rem);
+    }
+
+    .split-head h2,
+    .panel h2 {
+        font-size: clamp(2rem, 3.5vw, 3.3rem);
+        line-height: 1.08;
+        letter-spacing: -0.02em;
+    }
+
+    .showcase-text h2 {
+        font-size: clamp(2.4rem, 4.6vw, 4.4rem);
+        line-height: 1;
+        letter-spacing: -0.025em;
+    }
+}
+
+/* --- Geomancer showcase: the picture runs off the right of the screen ---- */
+
+.showcase-grid {
+    display: grid;
+    gap: 2.5rem;
+    max-width: var(--page);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+}
+
+/* A glow, not a shadow: no offset, gold. */
+.showcase-figure img {
+    box-shadow: 0 0 90px rgba(201, 150, 60, 0.09);
+}
+
+@media (min-width: 1000px) {
+    .showcase-grid {
+        /* The same left edge as .wrap, worked out here because this grid
+           spans the whole screen. */
+        --side: max(var(--gutter), calc((100% - var(--page)) / 2 + var(--gutter)));
+        max-width: none;
+        padding-inline: 0;
+        gap: 0;
+        grid-template-columns: var(--side) minmax(0, 5fr) minmax(0, 7fr) var(--side);
+        align-items: center;
+    }
+
+    .showcase-text {
+        grid-column: 2;
+        padding-right: clamp(2.5rem, 5vw, 6rem);
+    }
+
+    .showcase-figure {
+        grid-column: 3 / 5;
+    }
+
+    .showcase-figure img {
+        border-radius: 14px 0 0 14px;
+        border-right: 0;
+    }
+
+    .showcase-figure figcaption {
+        padding-right: var(--gutter);
+    }
+}
+
+/* --- Devlog panel -------------------------------------------------------- */
+
+.panel {
+    display: grid;
+    gap: 1.5rem;
+    padding: clamp(1.75rem, 4.5vw, 4.5rem);
+    border: 1px solid var(--rule);
+    border-radius: 18px;
+    /* Charcoal with a glow wash in the far corner, 0.09 alpha at its peak. */
+    background:
+        radial-gradient(ellipse 70% 130% at 100% 100%, rgba(201, 150, 60, 0.09), transparent 70%),
+        var(--charcoal);
+}
+
+.panel .lede {
+    margin-bottom: 0;
+}
+
+/* Void on the raised panel, the same inversion as the footer's pills. */
+.panel .btn {
+    background: var(--void);
+}
+
+@media (min-width: 900px) {
+    .panel {
+        grid-template-columns: minmax(0, 1fr) auto;
+        column-gap: 4rem;
+        align-items: end;
+    }
+
+    .panel .button-row {
+        margin-top: 0;
+    }
+}
+
+/* --- Motion ---------------------------------------------------------------
+   One effect, decoration only, skipped entirely when the reader asks for
+   reduced motion (the site-wide block higher up would also flatten it;
+   this gate means it never starts).
+
+   Dawn, once, on load: the light rises from behind the world and the
+   lockup settles in.
+   -------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: no-preference) {
+    .hero-ground::before {
+        animation: dawn-light 2.8s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    }
+
+    .hero--dawn .hero-mark,
+    .hero--dawn .lockup-name,
+    .hero--dawn .lockup-sub,
+    .hero-ground > .wrap {
+        animation: dawn-settle 1.1s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    }
+
+    .hero--dawn .lockup-name { animation-delay: 0.12s; }
+    .hero--dawn .lockup-sub { animation-delay: 0.26s; }
+    .hero-ground > .wrap { animation-delay: 0.45s; }
+}
+
+@keyframes dawn-light {
+    from { opacity: 0; transform: translateY(7%); }
+    to { opacity: 1; transform: none; }
+}
+
+@keyframes dawn-settle {
+    from { opacity: 0; transform: translateY(0.6rem); }
+    to { opacity: 1; transform: none; }
+}
+
+/* --- Paper ----------------------------------------------------------------
+   The print block higher up sets paper's spacing and ink. The two blocks
+   above come later in the file, so where they set the same property on the
+   same selector they would win on paper too. These restate the print
+   block's values, and give the dawn hero and the panel the treatment paper
+   gives every other surface. Screen rendering is untouched.
+   -------------------------------------------------------------------------- */
+
+@media print {
+    .wrap {
+        padding-inline: 0;
+    }
+
+    section {
+        padding-block: 1rem;
+    }
+
+    .hero {
+        padding-bottom: 1rem;
+    }
+
+    .hero--dawn {
+        min-height: 0;
+    }
+
+    .lockup-sub,
+    .tagline--display {
+        color: inherit;
+    }
+
+    .panel {
+        background: transparent;
+        border: 1px solid #bbb;
+    }
+}
