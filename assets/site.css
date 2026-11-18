@@ -1179,6 +1179,13 @@ figcaption {
     word-break: break-word;
 }
 
+/* The address is a tap target, so it is at least 24px tall. Inline, it was
+   only as tall as its letters: 20px. */
+.contact-route a {
+    display: inline-block;
+    min-height: 24px;
+}
+
 .entry-date {
     font-size: 0.85rem;
     letter-spacing: 0.1em;
